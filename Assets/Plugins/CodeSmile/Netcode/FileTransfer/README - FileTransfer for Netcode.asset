@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16ef68de3c6444c9bc3d9fa8007b4e6, type: 3}
+  m_Name: README - FileTransfer for Netcode
+  m_EditorClassIdentifier: 
+  editing: 0
+  icon: {fileID: 2800000, guid: 95cf0698ecdfc7d4aad575844c9edcfc, type: 3}
+  title: CodeSmile's FileTransfer for Netcode
+  sections:
+  - heading: What is it?
+    text: Transfer files or any byte[] from and to server and client.
+    linkText: CodeSmile Website
+    url: http://codesmile.de
+  - heading: Demo Instructions
+    text: I recommend installing ParrelSync into the project for testing multiplayer
+      without having to make builds.
+    linkText: ParrelSync
+    url: https://github.com/VeriorPies/ParrelSync
+  - heading: Step 1
+    text: 'Open the FileTransfer for Netcode scene in this folder: /Assets/Plugins/CodeSmile/Netcode/FileTransfer/Demo'
+    linkText: 
+    url: 
+  - heading: Step 2
+    text: Open File => Build Settings and click on "Add Open Scenes" or manually
+      add the FileTransfer scene to the top of the "Scenes in Build" list
+    linkText: 
+    url: 
+  - heading: Step 3
+    text: 'Build, wait, and after build succeeded: Run the build twice'
+    linkText: 
+    url: 
+  - heading: Step 4
+    text: 'Click "Host" in one instance and confirm default settings (address: "localhost",
+      port: "7777")'
+    linkText: 
+    url: 
+  - heading: Step 5
+    text: Click "Join" in the other instance and enter same settings as for server
+      (see above)
+    linkText: 
+    url: 
+  - heading: Step 6
+    text: Click on "Send" button of either instance and notice the CodeSmile logo
+      appearing on the other instance => image was transferred as PNG file data
+    linkText: 
+    url: 
+  - heading: Final Note
+    text: If you test with ParrelSync in the editor, you will also see Console logs
+      indicating the transfer status. Inspect FileTransferDemo.cs for the end-user
+      interface of FileTransfer for Netcode.
+    linkText: 
+    url: 
+  - heading: Contact me!
+    text: Don't hesitate to contact me if you need support or want to share feedback!
+    linkText: Join CodeSmile Discord Channel
+    url: https://discord.gg/56zUz3ZHUJ
+  - heading: 
+    text: 
+    linkText: Unity Forum profile
+    url: https://forum.unity.com/members/codesmile.602581/
+  - heading: 
+    text: 
+    linkText: Email me
+    url: mailto:fremdspielen@gmail.com

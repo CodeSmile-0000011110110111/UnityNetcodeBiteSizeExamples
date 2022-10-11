@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- ============================ SNIP ================================ -->
+
+&#x1F4AB; <strong>Free BETA! Grab it while it's hot!</strong> &#x1F4AB;<br/>
+During the beta period I will gather feedback and suggestions for improvements, and of course work out any issues. 
+I have plenty of feature ideas. I am most interested to hear what has the highest priority for you!
+==========================================================================
+<br/><br/>
+&#x21b9; <strong>FileTransfer for Netcode</strong> &#x21b9; lets players <strong>share:</strong><br/>
+
+&#x1F306; textures &#x1F3B4;<br/>
+&#x1F50A; sound fx &#x1F44F;<br/>
+&#x1F3B6; music &#x1F3BC;<br/>
+&#x1F3A2; maps &#x1F3F0;<br/>
+&#x1F3AE; ghosts &#x1F3C1;<br/>
+&#x1F3A5; recordings &#x1F3AC;<br/>
+&#x1F527; settings &#x1F529;<br/>
+&#x1F4C3; documents &#x1F4F0;<br/>
+&#x1F304; moments &#x1F309;<br/>
+&#x1F48C; love <em>(*)</em> &#x1F490;<br/>
+&#x1F4E4; <strong>any kind of data</strong> &#x1F4E5;<br/>
+with Unity's Netcode for GameObjects.<br/>
+<br/>
+<em>(*)</em> One might say love isn't data, but computers don't know that. &#x1F607;
+<br/><br/>
+<strong>— Why use FileTransfer? —</strong><br/>
+NetworkVariables and RPC calls can only send limited amounts of data at once. 
+Combined traffic generated in the same network tick must not exceed 32 KB with Unity Transport for example.
+<br/><br/>
+To transfer large amounts of data (ie files) FileTransfer requests a transfer with the 
+receiver who either accepts or denies. If accepted, a sequence of data packets (configurable size)
+are sent over time while the receiver puts them together in the right order.
+<br/><br/>
+When all data has been sent, the receiver verifies the data for correctnes and lets the sender know.
+<br/><br/>
+At any time during a transfer a client might disconnect or the user might decide to cancel the transfer.
+FileTransfer handles that, too.
+<br/><br/>
+<strong>— Feedback & Suggestions Welcome! —</strong><br/>
+Do you need <strong>FileTransfer</strong> for any other networking solution besides NGO?<br/>
+Do you need any specific feature(s) built into <strong>FileTransfer</strong>?
+<br/><br/>
+Contact me:<br/> 
+&#x1F4E2; <a href="https://discord.gg/EqCu7CGgJA">Discord</a><br/>
+&#x1F4E7; <a href="mailto:steffen@steffenitterheim.de">Email</a><br/>
+<br/>
+<strong>— Features —</strong><br/>
+&#x25B6; Send data from: client to server / server to client<br/>
+&#x25B6; Receiver can allow or deny a transfer request<br/>
+&#x25B6; SHA1 checksum verification of received data<br/>
+&#x25B6; NetworkFileTransfer.Singleton (file handling)<br/>
+&nbsp;&nbsp;Send Texture2D as PNG<br/>
+&nbsp;&nbsp;Send a file's raw contents<br/>
+&nbsp;&nbsp;More planned ...<br/>
+&#x25B6; NetworkDataTransfer.Singleton (low-level)<br/>
+&nbsp;&nbsp;Send any byte[]<br/>
+&#x25B6; OnRequest, OnProgress, OnFinished callbacks for:<br/>
+&nbsp;&nbsp;Client sending<br/>
+&nbsp;&nbsp;Client receiving<br/>
+&nbsp;&nbsp;Server sending<br/>
+&nbsp;&nbsp;Server receiving<br/>
+&#x1F6A7; Many more features under consideration ... let me know what you need!<br/>
+&#x1F4DD; View the <a href="https://trello.com/b/f6qKqgfh/filetransfer-for-netcode">Trello board</a> for status.<br/>
+<br/>
+<strong>— Usage Examples —</strong><br/>
+NetworkFileTransfer.Singleton.SendToServer(playerLogoTexture);<br/>
+NetworkDataTransfer.Singleton.SendToClient(new byte[] {20,20,3,40,102,1});<br/>
+<br/>
+<strong>— Bonus Features —</strong><br/>
+&#x25B6; Wizard GUI to host/join a Netcode game<br/>
+&#x25B6; Quickly re-host/re-join using the previous settings<br/>
+&#x25B6; Save/Load entire menu state to/from PlayerPrefs<br/>
+&#x25B6; Join by hostname (IP address resolution)<br/>
+&#x25B6; Displays host's local and public IP address<br/>
+<br/>
+<strong>— Requirements / Dependencies —</strong><br/>
+&#x1F449; Unity Netcode for GameObjects 1.0 or higher<br/>
+&#x1F449; Unity.Collections<br/>
+&#x1F449; Unity.TextMeshPro (for demo UI only)<br/>
+<br/>
+<strong>— Current Limitations —</strong><br/>
+&#x261D; Only one transfer at a time<br/>
+&#x261D; Transfer rate limited by RTT (each data packet requires an ACK from receiver)<br/>
+&#x261D; Data resides entirely in memory during transfer<br/>
+<br/>
+
+<!-- ============================ SNIP ================================ -->
+
+
+</body>
+</html>
