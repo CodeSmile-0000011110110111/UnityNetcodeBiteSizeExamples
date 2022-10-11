@@ -1,6 +1,5 @@
-# UnityNetcodeBiteSizeExamples
-
-## [View Documentation](https://codesmile.gitbook.io/netcode-bitesize-examples/)
+# Unity Netcode BiteSize Examples
+## ![CodeSmile](/Assets/Plugins/CodeSmile/Shared/Textures/CodeSmile-tiny.png) [View Documentation](https://codesmile.gitbook.io/netcode-bitesize-examples/)
 
 With this project I want to learn all about Netcode in detail before I begin applying it to a real project.
 
@@ -15,7 +14,7 @@ In the meantime, feel free to fork and port it yourself, then send me a pull req
 
 The following examples are complete:
 
-- QuickStart
+- QuickStart Menu
 	- host or join network game using a wizard menu
 	- show host's public and local IP (to relay this info to clients)
 	- supports domain/host name entry (eg dynamic DNS address)
