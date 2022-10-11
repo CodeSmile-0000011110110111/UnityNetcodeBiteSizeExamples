@@ -16,24 +16,24 @@ In the meantime, feel free to fork and port it yourself, then send me a pull req
 The following examples are complete:
 
 - QuickStart
--- host or join network game using a wizard menu
--- show host's public and local IP (to relay this info to clients)
--- supports domain/host name entry (eg dynamic DNS address)
--- spawns a physics-enabled player prefab (not controllable)
--- player physics simulation disabled for all clients (except host)
+	- host or join network game using a wizard menu
+	- show host's public and local IP (to relay this info to clients)
+	- supports domain/host name entry (eg dynamic DNS address)
+	- spawns a physics-enabled player prefab (not controllable)
+	- player physics simulation disabled for all clients (except host)
 - ConnectionManagement
--- Ingame menu for server and client
--- Server can shutdown, kick one or all clients
--- Client can disconnect
--- Disconnect/Shutdown will correctly bring up QuickStart menu
--- All combinations of shutdown/disconnect, then host/join again cause no issues
+	- Ingame menu for server and client
+	- Server can shutdown, kick one or all clients
+	- Client can disconnect
+	- Disconnect/Shutdown will correctly bring up QuickStart menu
+	- All combinations of shutdown/disconnect, then host/join again cause no issues
 - SceneManagement
--- Introduces a loader scene, to prevent duplicate NetworkManager instances
--- Upon hosting/joining a game, a scene will be loaded
--- Server menu to load additive scenes (unloads excess scenes automatically)
--- Server can also switch to another scene (unloads additive scenes)
--- All scene events are synchronized with clients, including late joining clients
--- Server logs all OnSceneEvent callbacks to the console
--- Server adding/loading scenes too quickly (previous scene didn't finish loading) logged as warnings
--- Clients can join at any time and should get everything synchronized
--- Additive scenes contain physics-enabled networked objects, only simulated on server-side
+	- Introduces a loader scene, to prevent duplicate NetworkManager instances
+	- Upon hosting/joining a game, a scene will be loaded
+	- Server menu to load additive scenes (unloads excess scenes automatically)
+	- Server can also switch to another scene (unloads additive scenes)
+	- All scene events are synchronized with clients, including late joining clients
+	- Server logs all OnSceneEvent callbacks to the console
+	- Server adding/loading scenes too quickly (previous scene didn't finish loading) logged as warnings
+	- Clients can join at any time and should get everything synchronized
+	- Additive scenes contain physics-enabled networked objects, only simulated on server-side
