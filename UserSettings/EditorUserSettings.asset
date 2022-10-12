@@ -5,32 +5,35 @@ EditorUserSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 4
   m_ConfigSettings:
+    RecentlyUsedSceneGuid-0:
+      value: 5b070d5453505f590b5b092716205b4442164c2e747e70697f2f4937b7e5316f
+      flags: 0
     RecentlyUsedScenePath-0:
-      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1453a08f3050f261000fc0914f2151d058a2bc61fc61a0f843818cac409d8f5d0e5d7efd6eeb596cbd1a9e6ed
-      flags: 0
-    RecentlyUsedScenePath-1:
-      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1453a08f3050f261000fc0914f2151d058a2bc61fc61a0f843818cac409d8f5d0e5d7efd6eeb496cbd1a9e6ed
-      flags: 0
-    RecentlyUsedScenePath-2:
-      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1453a08f3050f261000fc0914f2151d058a2bc61fc61a31ca171dc9c810d4edc1f3ccebd5fbebdd90caaefbe0e9
-      flags: 0
-    RecentlyUsedScenePath-3:
-      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455959c92805051f0bfe1a18f01e3e10cb19c21fc51a12df563fc1c313d4e0c1dfdbe4f5eae9d9d9daadf7fae4cbe0f4fcb5f7afe6e9cea3bbe7
-      flags: 0
-    RecentlyUsedScenePath-4:
       value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455958c938090e1f0bd00f1ffe17161cc016d155fb1c19c51c0f81ec19d5eac1dfc2efebe8e2d6db8ceee7faf9fae1
       flags: 0
-    RecentlyUsedScenePath-5:
+    RecentlyUsedScenePath-1:
       value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae145595ac93a1f021205ce1a10ed043e14cb0d8a2bdd161fc02a08cfdf09fce6dbc3f1f2d9e6f7d4db91b5fcfde4f7
       flags: 0
-    RecentlyUsedScenePath-6:
+    RecentlyUsedScenePath-2:
       value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455958c938090e1f0bd00f1ffe17161cc016d155fb1c19c51c0f81e01cd8edf8d3daff96fee9d1cac6
       flags: 0
-    RecentlyUsedScenePath-7:
+    RecentlyUsedScenePath-3:
       value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455958c938090e1f0bd00f1ffe17161cc016d155fb1c19c51c0f81ea1cdce6e6d5d1e4dda5f2d6d7cbb9
       flags: 0
-    RecentlyUsedScenePath-8:
+    RecentlyUsedScenePath-4:
       value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455958c938090e1f0bd00f1ffe17161cc016d155fb1c19c51c0f81f912c5e2d9dacdced1ede1ddccdaaee6d3f1e3fdc6f2a0f5afe6e9cea3bbe7
+      flags: 0
+    RecentlyUsedScenePath-5:
+      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455958c938090e1f0bd00f1ffe17161cc016d155fb1c19c51c31cfc31cd6e6d8d3dafefdf3e6d5ced3a5b2a5befbf6fce5bc
+      flags: 0
+    RecentlyUsedScenePath-6:
+      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae145595fc92705091317b23d12fa1e163cc416c41dcd1219c50d39d6cc10c1efd09685a4cde5eeccc7
+      flags: 0
+    RecentlyUsedScenePath-7:
+      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae145595fc92705091317b22014e8502012c016c054dd1115df00
+      flags: 0
+    RecentlyUsedScenePath-8:
+      value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae145595fc92705091317b2221efd120a34dd19c80ac41a52de1715dad4
       flags: 0
     RecentlyUsedScenePath-9:
       value: 224247031146466b011b0b2b1e30103319131d1921212a3562071827e1ef303dadc53ffde20936263c27f73d092e0d3ae1455958c938090e1f0bd00f1ffe17161cc016d155fb1c19c51c31cfc31cd6e6d8d3dafefdf3e6d5ced3a5bce1fee7ecec
@@ -43,9 +46,13 @@ EditorUserSettings:
   m_VCDebugCmd: 0
   m_VCDebugOut: 0
   m_SemanticMergeMode: 2
+  m_DesiredImportWorkerCount: 19
+  m_StandbyImportWorkerCount: 2
+  m_IdleImportWorkerShutdownDelay: 60000
   m_VCShowFailedCheckout: 1
   m_VCOverwriteFailedCheckoutAssets: 1
   m_VCProjectOverlayIcons: 1
   m_VCHierarchyOverlayIcons: 1
   m_VCOtherOverlayIcons: 1
   m_VCAllowAsyncUpdate: 1
+  m_ArtifactGarbageCollection: 1
