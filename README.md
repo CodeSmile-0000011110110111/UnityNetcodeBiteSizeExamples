@@ -6,7 +6,7 @@ With this project I want to learn all about Netcode in detail before I begin app
 My Netcode BiteSize examples cover all possible/relevant workflow combinations of a specific Netcode aspect (eg connection, scenes, spawning). 
 They aim to be minimal but very helpful, technically complete solutions.
 
-Made with Unity 2020.3 and Netcode for GameObjects 1.0.
+Made with Unity 2021.3 and Netcode for GameObjects 1.0.
 I may port the examples to other networking solutions in the future, to be able to compare them. 
 In the meantime, feel free to fork and port it yourself, then send me a pull request if you wish.
 

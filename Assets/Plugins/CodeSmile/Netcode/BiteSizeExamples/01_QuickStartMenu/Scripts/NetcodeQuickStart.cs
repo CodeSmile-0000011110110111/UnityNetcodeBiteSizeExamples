@@ -35,6 +35,8 @@ namespace CodeSmile.Netcode.QuickStart
 		[SerializeField] private string _serverAddress = "localhost";
 		[Tooltip("Port the server accepts connections on.")]
 		[SerializeField] private string _serverPort = "7777";
+		[SerializeField] private bool _createPlayerObject = true;
+		[SerializeField] private int _maxConnectedClients = 32;
 
 		private readonly string _serverListenAddress = "0.0.0.0"; // 0.0.0.0 means: listen to all
 
@@ -155,10 +157,18 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private void ConnectionApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
 		{
+			// don't allow more players than max
+			if (NetworkManager.Singleton.ConnectedClientsList.Count >= _maxConnectedClients)
+			{
+				NetworkLog.LogWarningServer($"Server rejected connection request: server full ({_maxConnectedClients} clients)");
+				response.Approved = false;
+				return;
+			}
+			
 			var payload = JsonUtility.FromJson<ConnectionPayload>(Encoding.ASCII.GetString(request.Payload));
 			_playerInfos.Add(request.ClientNetworkId, new PlayerInfo { Name = payload.PlayerName });
 
-			response.CreatePlayerObject = true;
+			response.CreatePlayerObject = _createPlayerObject;
 			response.Rotation = Quaternion.identity;
 			response.Position = Vector3.one;
 			response.Approved = true;
