@@ -6,7 +6,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	public sealed class ConnectingMenu : MenuSystemBase
 	{

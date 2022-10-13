@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	public sealed class ConnectedMenu : MenuSystemBase
 	{

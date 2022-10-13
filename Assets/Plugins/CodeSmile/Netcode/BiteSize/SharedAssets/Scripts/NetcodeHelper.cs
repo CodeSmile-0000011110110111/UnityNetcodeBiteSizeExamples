@@ -8,7 +8,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Unity.Netcode;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	public static class NetcodeHelper
 	{

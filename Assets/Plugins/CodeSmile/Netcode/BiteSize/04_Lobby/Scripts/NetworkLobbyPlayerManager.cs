@@ -5,28 +5,33 @@ using UnityEngine;
 
 namespace CodeSmile.Netcode.BiteSize.Lobby
 {
-	public sealed class LobbyPlayerSpotManager : NetworkBehaviour
+	public sealed class NetworkLobbyPlayerManager : NetworkBehaviour
 	{
 		[SerializeField] private GameObject[] _playerPrefabs = new GameObject[4];
 
 		private Transform[] _spawnLocations;
 		private ulong[] _assignedLocations;
 		private ConnectionManager _connectionManager;
-
-		private void Start()
-		{
-			_connectionManager = FindObjectOfType<ConnectionManager>();
-			AddNetworkManagerCallbacks();
-			InitSpawnLocations();
-			SpawnExistingPlayers();
-		}
+		private NetworkLobbyReadyState _readyState;
 
 		public override void OnDestroy()
 		{
 			RemoveNetworkManagerCallbacks();
 			_connectionManager = null;
-			
+
 			base.OnDestroy();
+		}
+
+		public override void OnNetworkSpawn()
+		{
+			base.OnNetworkSpawn();
+
+			_connectionManager = FindObjectOfType<ConnectionManager>();
+			_readyState = GetComponent<NetworkLobbyReadyState>();
+
+			AddNetworkManagerCallbacks();
+			InitSpawnLocations();
+			SpawnExistingPlayers();
 		}
 
 		private void AddNetworkManagerCallbacks()
@@ -37,9 +42,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 				RemoveNetworkManagerCallbacks();
 				netMan.OnClientConnectedCallback += OnClientConnected;
 				netMan.OnClientDisconnectCallback += OnClientDisconnect;
-				
-				if (IsServer)
-					_connectionManager.OnKickedRemoteClient += OnServerKickedRemoteClient;
+				_connectionManager.OnServerKickedRemoteClient += OnServerKickedRemoteClient;
 			}
 		}
 
@@ -50,21 +53,21 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			{
 				netMan.OnClientConnectedCallback -= OnClientConnected;
 				netMan.OnClientDisconnectCallback -= OnClientDisconnect;
-
-				if (IsServer)
-					_connectionManager.OnKickedRemoteClient -= OnServerKickedRemoteClient;
+				_connectionManager.OnServerKickedRemoteClient -= OnServerKickedRemoteClient;
 			}
 		}
 
 		private void OnClientConnected(ulong clientId)
 		{
 			Net.LogInfoServer($"OnClientConnected({clientId})");
+
 			SpawnPlayerObject(clientId);
 		}
 
 		private void OnClientDisconnect(ulong clientId)
 		{
 			Net.LogInfoServer($"OnClientDisconnect({clientId})");
+
 			DespawnPlayerObject(clientId);
 		}
 
@@ -73,7 +76,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			Net.LogInfo($"OnKickedRemoteClient({clientId}, {reason})");
 			DespawnPlayerObject(clientId);
 		}
-		
+
 		private void InitSpawnLocations()
 		{
 			// Assumption: spawn locations are first child of this object's children
@@ -113,6 +116,8 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 
 				// prevent it from moving / toppling over in the lobby
 				playerObject.GetComponent<Rigidbody>().isKinematic = true;
+
+				_readyState.BroadcastPlayerReadyStates();
 			}
 		}
 
@@ -120,6 +125,8 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 		{
 			if (IsServer)
 			{
+				_readyState.SetPlayerReadyState(clientId, false);
+
 				var clientLobbyIndex = GetClientLobbyIndex(clientId);
 				Net.LogInfo($"Despawn player {clientId} with lobby index {clientLobbyIndex}");
 
@@ -147,7 +154,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			return index;
 		}
 
-		private int GetClientLobbyIndex(ulong clientId)
+		public int GetClientLobbyIndex(ulong clientId)
 		{
 			for (var i = 0; i < _assignedLocations.Length; i++)
 				if (_assignedLocations[i] == clientId)
@@ -155,5 +162,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 
 			return -1;
 		}
+
+		public ulong GetClientId(int lobbyIndex) => _assignedLocations[lobbyIndex];
 	}
 }

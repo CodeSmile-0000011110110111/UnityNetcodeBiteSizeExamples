@@ -35,12 +35,12 @@ namespace CodeSmile.Netcode.BiteSize
 		/// <summary>
 		/// Invoked on the server when a client has been forcefully disconnected.
 		/// </summary>
-		public event Action<ulong, KickReason> OnKickedRemoteClient = null;
+		public event Action<ulong, KickReason> OnServerKickedRemoteClient = null;
 
 		private void OnDestroy()
 		{
 			OnNetworkShutdown = null;
-			OnKickedRemoteClient = null;
+			OnServerKickedRemoteClient = null;
 		}
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace CodeSmile.Netcode.BiteSize
 				if (netMan.IsServer)
 				{
 					netMan.DisconnectClient(clientId);
-					OnKickedRemoteClient?.Invoke(clientId, reason);
+					OnServerKickedRemoteClient?.Invoke(clientId, reason);
 				}
 				else
 				{

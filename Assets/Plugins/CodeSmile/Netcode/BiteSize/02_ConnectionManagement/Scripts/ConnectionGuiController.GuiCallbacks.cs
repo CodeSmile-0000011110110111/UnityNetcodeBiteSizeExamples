@@ -3,7 +3,7 @@
 
 using Unity.Netcode;
 
-namespace CodeSmile.Netcode.BiteSize.ConnectionHandling
+namespace CodeSmile.Netcode.BiteSize.Connection
 {
 	public sealed partial class ConnectionGuiController
 	{

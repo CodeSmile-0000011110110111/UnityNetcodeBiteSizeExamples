@@ -7,7 +7,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	[Serializable]
 	public struct PlayerInfo

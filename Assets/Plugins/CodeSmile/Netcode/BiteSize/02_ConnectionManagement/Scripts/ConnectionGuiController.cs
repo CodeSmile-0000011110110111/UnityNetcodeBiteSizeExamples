@@ -1,8 +1,8 @@
-using CodeSmile.Netcode.QuickStart;
+using CodeSmile.Netcode.BiteSize.QuickStart;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.BiteSize.ConnectionHandling
+namespace CodeSmile.Netcode.BiteSize.Connection
 {
 	public sealed partial class ConnectionGuiController : MonoBehaviour
 	{

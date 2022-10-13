@@ -4,7 +4,7 @@
 using System;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	public class MenuSystemBase : MonoBehaviour
 	{

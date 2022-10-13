@@ -4,7 +4,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	public sealed class JoinGameMenu : MenuSystemBase
 	{

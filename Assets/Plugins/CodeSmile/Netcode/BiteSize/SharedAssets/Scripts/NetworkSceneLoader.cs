@@ -25,6 +25,13 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 		private string[] _additiveSceneNames;
 		private bool _quitting;
 
+		private ConnectionManager _connectionManager;
+
+		private void Awake()
+		{
+			_connectionManager = FindObjectOfType<ConnectionManager>();
+		}
+
 		public override void OnDestroy()
 		{
 			RemoveNetworkCallbacks();
@@ -40,7 +47,7 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 				// ensure that we never register twice in case this method is called more than once 
 				RemoveNetworkCallbacks();
 				NetworkManager.SceneManager.OnSceneEvent += OnSceneEvent;
-				FindObjectOfType<ConnectionManager>().OnNetworkShutdown += OnNetworkShutdown;
+				_connectionManager.OnNetworkShutdown += OnNetworkShutdown;
 			}
 		}
 
@@ -49,7 +56,7 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 			if (NetworkObject != null && NetworkManager?.SceneManager != null)
 			{
 				NetworkManager.SceneManager.OnSceneEvent -= OnSceneEvent;
-				FindObjectOfType<ConnectionManager>().OnNetworkShutdown -= OnNetworkShutdown;
+				_connectionManager.OnNetworkShutdown -= OnNetworkShutdown;
 			}
 		}
 

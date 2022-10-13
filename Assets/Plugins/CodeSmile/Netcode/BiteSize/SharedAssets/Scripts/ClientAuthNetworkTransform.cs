@@ -4,7 +4,7 @@
 using Unity.Netcode.Components;
 using UnityEngine;
 
-namespace CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
 	public class ClientAuthNetworkTransform : MonoBehaviour
 	{

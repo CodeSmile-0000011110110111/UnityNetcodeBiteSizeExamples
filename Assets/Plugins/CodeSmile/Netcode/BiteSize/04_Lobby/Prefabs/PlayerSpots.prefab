@@ -271,6 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4723717113384277917}
   - component: {fileID: 4723717113384277919}
+  - component: {fileID: 2499378399446448636}
   - component: {fileID: 4723717113384277916}
   m_Layer: 0
   m_Name: PlayerSpots
@@ -315,6 +316,21 @@ MonoBehaviour:
   - {fileID: 5272433274785593080, guid: 4ffb3beb259c4e84eb872c656c9c9093, type: 3}
   - {fileID: 5272433274785593080, guid: 5fcc6c7fda5c88647b8fc12295aa44ef, type: 3}
   - {fileID: 5272433274785593080, guid: 1d9ec31a9578daa47a71ec0a7bb389e9, type: 3}
+--- !u!114 &2499378399446448636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4723717113384277890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c55b4c23f8b42bd804e98cb06637dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _notReadyMaterial: {fileID: 2100000, guid: c54076cbf107320468cdfd7c1ef321f4, type: 2}
+  _readyMaterial: {fileID: 2100000, guid: 3d0ec977a7ac4304b98cddc75a4157b5, type: 2}
+  _playerReadyStates: 
 --- !u!114 &4723717113384277916
 MonoBehaviour:
   m_ObjectHideFlags: 0
