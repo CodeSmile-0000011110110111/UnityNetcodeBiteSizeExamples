@@ -33,6 +33,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 				RemoveNetworkManagerCallbacks();
 				netMan.OnClientConnectedCallback += OnClientConnected;
 				netMan.OnClientDisconnectCallback += OnClientDisconnect;
+				netMan.SceneManager.OnSynchronizeComplete += OnClientSynchronizeComplete;
 			}
 		}
 
@@ -43,10 +44,21 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			{
 				netMan.OnClientConnectedCallback -= OnClientConnected;
 				netMan.OnClientDisconnectCallback -= OnClientDisconnect;
+				netMan.SceneManager.OnSynchronizeComplete -= OnClientSynchronizeComplete;
 			}
 		}
 
-		private void OnClientConnected(ulong clientId) => SpawnPlayerObject(clientId);
+		private void OnClientSynchronizeComplete(ulong clientId)
+		{
+			Net.LogInfo("OnClientSynchronizeComplete");
+			//SpawnPlayerObject(clientId);
+		}
+
+		private void OnClientConnected(ulong clientId)
+		{
+			Net.LogInfoServer("OnClientConnected");
+			//SpawnPlayerObject(clientId);
+		}
 
 		private void OnClientDisconnect(ulong clientId)
 		{
