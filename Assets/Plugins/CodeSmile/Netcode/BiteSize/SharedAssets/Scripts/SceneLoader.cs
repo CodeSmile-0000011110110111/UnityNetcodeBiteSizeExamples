@@ -13,7 +13,7 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 
 		private void Update()
 		{
-			Debug.Log($"Try load scene: {_sceneName}");
+			Debug.Log($"Load scene: {_sceneName}");
 			SceneManager.LoadScene(_sceneName);
 		}
 

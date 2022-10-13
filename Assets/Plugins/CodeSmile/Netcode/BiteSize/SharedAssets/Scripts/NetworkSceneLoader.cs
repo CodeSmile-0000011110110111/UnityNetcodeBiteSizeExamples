@@ -25,41 +25,33 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 		private string[] _additiveSceneNames;
 		private bool _quitting;
 
-		private void Update()
-		{
-			// HACK for when user clicks Disconnect button since NetworkManager does not have a OnShutdown event
-			// and since client disconnects intentionally, Netcode won't call OnClientDisconnect either assuming user code handles that
-			// well, this handles it without resorting to adding an event handler for the Disconnect button:
-			if (IsClientDisconnected())
-				LoadSceneWhenDisconnected();
-		}
-
 		public override void OnDestroy()
 		{
-			//Debug.Log($"{name} - OnDestroy()");
-			RemoveNetworkSceneManagerCallbacks();
+			RemoveNetworkCallbacks();
 			base.OnDestroy();
 		}
 
 		private void OnApplicationQuit() => _quitting = true;
 
-		private void AddNetworkSceneManagerCallbacks()
+		private void AddNetworkCallbacks()
 		{
 			if (NetworkManager?.SceneManager != null)
 			{
 				// ensure that we never register twice in case this method is called more than once 
-				RemoveNetworkSceneManagerCallbacks();
+				RemoveNetworkCallbacks();
 				NetworkManager.SceneManager.OnSceneEvent += OnSceneEvent;
+				FindObjectOfType<ConnectionManager>().OnNetworkShutdown += OnNetworkShutdown;
 			}
 		}
 
-		private void RemoveNetworkSceneManagerCallbacks()
+		private void RemoveNetworkCallbacks()
 		{
 			if (NetworkObject != null && NetworkManager?.SceneManager != null)
+			{
 				NetworkManager.SceneManager.OnSceneEvent -= OnSceneEvent;
+				FindObjectOfType<ConnectionManager>().OnNetworkShutdown -= OnNetworkShutdown;
+			}
 		}
-
-		private bool IsClientDisconnected() => IsClient && IsServer == false && NetworkManager.IsConnectedClient == false;
 
 		/// <summary>
 		/// Receives all scene loading events. This just logs what's happening.
@@ -82,7 +74,7 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 
 		public override void OnNetworkSpawn()
 		{
-			AddNetworkSceneManagerCallbacks();
+			AddNetworkCallbacks();
 			if (_loadEvent == LoadEvent.OnNetworkSpawn)
 				TryLoadScene();
 		}
@@ -93,19 +85,29 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 				TryLoadScene();
 		}
 
+		private void OnNetworkShutdown()
+		{
+			if (IsServer == false)
+			{
+				Debug.Log($"Load scene on client shutdown: {_onEventSceneName}");
+				if (_loadEvent == LoadEvent.OnNetworkDespawn)
+					OnEventLoadSceneNonNetworked();
+			}
+		}
+
 		public void LoadSceneAdditive(int sceneIndex)
 		{
 			if (IsServer && NetworkManager.IsListening)
 			{
 				if (_additiveSceneNames == null || _additiveSceneNames.Length == 0)
 				{
-					NetworkLog.LogError("NetworkSceneLoader has not additive scenes assigned");
+					Net.LogError("NetworkSceneLoader has not additive scenes assigned");
 					return;
 				}
 
 				if (sceneIndex < 0 || sceneIndex >= _additiveSceneNames.Length)
 				{
-					NetworkLog.LogError($"NetworkSceneLoader should load scene {sceneIndex} but has only {_additiveSceneNames.Length} scenes");
+					Net.LogError($"NetworkSceneLoader should load scene {sceneIndex} but has only {_additiveSceneNames.Length} scenes");
 					return;
 				}
 
@@ -113,11 +115,11 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 					NetworkManager.SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
 
 				var sceneName = _additiveSceneNames[sceneIndex];
-				NetworkLog.LogInfo($"Try load scene additive: {sceneName}");
+				Net.LogInfo($"Try load scene additive: {sceneName}");
 
 				var status = NetworkManager.SceneManager?.LoadScene(sceneName, LoadSceneMode.Additive);
 				if (status != SceneEventProgressStatus.Started)
-					NetworkLog.LogWarning($"Failed to add Scene '{_onEventSceneName}' => {status}");
+					Net.LogWarning($"Failed to add Scene '{_onEventSceneName}' => {status}");
 			}
 		}
 
@@ -127,14 +129,14 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 			{
 				if (_onDemandSceneName == null)
 				{
-					NetworkLog.LogError("NetworkSceneLoader has no on-demand scene assigned");
+					Net.LogError("NetworkSceneLoader has no on-demand scene assigned");
 					return;
 				}
 
-				NetworkLog.LogInfo($"Try load scene single: {_onDemandSceneName}");
+				Net.LogInfo($"Try load scene on demand: {_onDemandSceneName}");
 				var status = NetworkManager.SceneManager?.LoadScene(_onDemandSceneName, LoadSceneMode.Single);
 				if (status != SceneEventProgressStatus.Started)
-					NetworkLog.LogWarning($"Failed to load Scene '{_onDemandSceneName}' => {status}");
+					Net.LogWarning($"Failed to load Scene '{_onDemandSceneName}' => {status}");
 			}
 		}
 
@@ -149,22 +151,26 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 			}
 		}
 
-		private void LoadSceneWhenDisconnected() => SceneManager.LoadScene(_onEventSceneName);
+		private void OnEventLoadSceneNonNetworked()
+		{
+			RemoveNetworkCallbacks();
+			SceneManager.LoadScene(_onEventSceneName);
+		}
 
 		private void OnEventLoadScene()
 		{
-			NetworkLog.LogInfo($"NetworkSceneLoader - load scene: {_onEventSceneName}");
+			Net.LogInfo($"NetworkSceneLoader - OnEventLoadScene: {_onEventSceneName}");
 
 			// if despawned due to server shutting down we must load the scene using non-networked SceneManager
 			if (NetworkManager.ShutdownInProgress || NetworkManager.IsListening == false)
-				LoadSceneWhenDisconnected();
+				OnEventLoadSceneNonNetworked();
 			else
 			{
 				var status = NetworkManager.SceneManager?.LoadScene(_onEventSceneName, LoadSceneMode.Single);
 				if (status != SceneEventProgressStatus.Started)
 				{
-					NetworkLog.LogWarning($"Failed to load Scene '{_onEventSceneName}' => {status} - will try again ...");
-					// try again soon
+					Net.LogWarning($"Failed to load Scene '{_onEventSceneName}' => {status} - will try again ...");
+					// single scene load should not fail, thus try again soon:
 					StartCoroutine(OnEventLoadSceneAfterDelay(0.2f));
 				}
 			}
@@ -172,7 +178,10 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 
 		private IEnumerator OnEventLoadSceneAfterDelay(float delay)
 		{
-			yield return new WaitForSeconds(delay);
+			if (delay > 0f)
+				yield return new WaitForSeconds(delay);
+			else
+				yield return new WaitForEndOfFrame();
 
 			OnEventLoadScene();
 		}

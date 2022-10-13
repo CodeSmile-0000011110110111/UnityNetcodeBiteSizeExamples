@@ -11,9 +11,11 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 
 		private Transform[] _spawnLocations;
 		private ulong[] _assignedLocations;
+		private ConnectionManager _connectionManager;
 
 		private void Start()
 		{
+			_connectionManager = FindObjectOfType<ConnectionManager>();
 			AddNetworkManagerCallbacks();
 			InitSpawnLocations();
 			SpawnExistingPlayers();
@@ -22,6 +24,8 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 		public override void OnDestroy()
 		{
 			RemoveNetworkManagerCallbacks();
+			_connectionManager = null;
+			
 			base.OnDestroy();
 		}
 
@@ -33,7 +37,9 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 				RemoveNetworkManagerCallbacks();
 				netMan.OnClientConnectedCallback += OnClientConnected;
 				netMan.OnClientDisconnectCallback += OnClientDisconnect;
-				netMan.SceneManager.OnSynchronizeComplete += OnClientSynchronizeComplete;
+				
+				if (IsServer)
+					_connectionManager.OnKickedRemoteClient += OnServerKickedRemoteClient;
 			}
 		}
 
@@ -44,27 +50,30 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			{
 				netMan.OnClientConnectedCallback -= OnClientConnected;
 				netMan.OnClientDisconnectCallback -= OnClientDisconnect;
-				netMan.SceneManager.OnSynchronizeComplete -= OnClientSynchronizeComplete;
-			}
-		}
 
-		private void OnClientSynchronizeComplete(ulong clientId)
-		{
-			Net.LogInfo("OnClientSynchronizeComplete");
-			//SpawnPlayerObject(clientId);
+				if (IsServer)
+					_connectionManager.OnKickedRemoteClient -= OnServerKickedRemoteClient;
+			}
 		}
 
 		private void OnClientConnected(ulong clientId)
 		{
-			Net.LogInfoServer("OnClientConnected");
-			//SpawnPlayerObject(clientId);
+			Net.LogInfoServer($"OnClientConnected({clientId})");
+			SpawnPlayerObject(clientId);
 		}
 
 		private void OnClientDisconnect(ulong clientId)
 		{
+			Net.LogInfoServer($"OnClientDisconnect({clientId})");
 			DespawnPlayerObject(clientId);
 		}
 
+		private void OnServerKickedRemoteClient(ulong clientId, ConnectionManager.KickReason reason)
+		{
+			Net.LogInfo($"OnKickedRemoteClient({clientId}, {reason})");
+			DespawnPlayerObject(clientId);
+		}
+		
 		private void InitSpawnLocations()
 		{
 			// Assumption: spawn locations are first child of this object's children
@@ -96,12 +105,11 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			{
 				var clientLobbyIndex = GetNextClientLobbyIndex();
 				AssignSpawnLocation(clientLobbyIndex, clientId);
-				Debug.Log($"spawn player object #{clientLobbyIndex} for clientId {clientId}");
+				var spawnLocation = _spawnLocations[clientLobbyIndex];
+				Net.LogInfo($"spawn player object #{clientLobbyIndex} for clientId {clientId} at {spawnLocation.position}");
 
-				var playerObject = Instantiate(_playerPrefabs[clientLobbyIndex], Vector3.zero, Quaternion.identity);
-				var playerNetworkObject = playerObject.GetComponent<NetworkObject>();
-				playerNetworkObject.SpawnAsPlayerObject(clientId);
-				playerNetworkObject.TrySetParent(_spawnLocations[clientLobbyIndex], false);
+				var playerObject = Instantiate(_playerPrefabs[clientLobbyIndex], spawnLocation.position, spawnLocation.rotation);
+				playerObject.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
 
 				// prevent it from moving / toppling over in the lobby
 				playerObject.GetComponent<Rigidbody>().isKinematic = true;
@@ -111,7 +119,15 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 		private void DespawnPlayerObject(ulong clientId)
 		{
 			if (IsServer)
-				UnassignSpawnLocation(GetClientLobbyIndex(clientId));
+			{
+				var clientLobbyIndex = GetClientLobbyIndex(clientId);
+				Net.LogInfo($"Despawn player {clientId} with lobby index {clientLobbyIndex}");
+
+				if (clientLobbyIndex < 0)
+					Net.LogWarning($"Client {clientId} has no lobby index (probably was not spawned)");
+				else
+					UnassignSpawnLocation(clientLobbyIndex);
+			}
 		}
 
 		private void AssignSpawnLocation(int index, ulong clientId) => _assignedLocations[index] = clientId;
@@ -130,16 +146,14 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 
 			return index;
 		}
+
 		private int GetClientLobbyIndex(ulong clientId)
 		{
-			for (int i = 0; i < _assignedLocations.Length; i++)
-			{
+			for (var i = 0; i < _assignedLocations.Length; i++)
 				if (_assignedLocations[i] == clientId)
 					return i;
-			}
 
 			return -1;
 		}
-		
 	}
 }

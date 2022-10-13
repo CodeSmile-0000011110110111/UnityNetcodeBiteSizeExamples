@@ -15,11 +15,7 @@ namespace CodeSmile.Netcode.BiteSize.ConnectionHandling
 			UpdateGuiActiveState();
 		}
 
-		private void OnDestroy()
-		{
-			RemoveNetworkManagerCallbacks();
-			//ShutdownNetwork();
-		}
+		private void OnDestroy() => RemoveNetworkManagerCallbacks();
 
 		private void ShutdownNetwork()
 		{
@@ -29,8 +25,8 @@ namespace CodeSmile.Netcode.BiteSize.ConnectionHandling
 				NetworkLog.LogInfo(netMan.IsServer
 					? $"Shutting down server, disconnecting {netMan.ConnectedClientsList.Count} clients .."
 					: "Shutting down client, disconnecting from server (if still connected) ..");
-				
-				netMan.Shutdown();
+
+				FindObjectOfType<ConnectionManager>().NetworkShutdown();
 				UpdateGuiActiveState();
 			}
 		}
@@ -54,23 +50,24 @@ namespace CodeSmile.Netcode.BiteSize.ConnectionHandling
 			menu?.gameObject.SetActive(true);
 		}
 
-		private void KickClients(int kickThisManyClients = 1)
+		private void KickClients(int kickThisManyClients)
 		{
 			var netMan = NetworkManager.Singleton;
 			var clientIds = netMan.ConnectedClientsIds;
 			var clientCount = clientIds.Count;
+			var connMan = FindObjectOfType<ConnectionManager>();
 
 			// DisconnectClient() modifies ConnectedClientsIds hence the reverse enumeration
 			for (var i = clientCount - 1; i >= 0; i--)
 			{
 				var clientId = clientIds[i];
 
-				// don't kick the host :)
+				// don't kick the host - note this is also ensured by KickRemoteClient
 				if (clientId == NetworkManager.ServerClientId)
 					continue;
 
-				NetworkLog.LogInfo($"Kicking client {clientId} for no reason ..");
-				netMan.DisconnectClient(clientId);
+				NetworkLog.LogInfo($"Kicking client {clientId} for no good reason ..");
+				connMan.KickRemoteClient(clientId, ConnectionManager.KickReason.ByAuthorityOfTheServer);
 
 				kickThisManyClients--;
 				if (kickThisManyClients <= 0)

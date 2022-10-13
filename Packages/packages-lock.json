@@ -81,14 +81,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.netcode.gameobjects": {
-      "version": "1.0.2",
+      "version": "file:C:/Users/Eedee F/UnityProjects/_Netcode/NGO/com.unity.netcode.gameobjects",
       "depth": 0,
-      "source": "registry",
+      "source": "local",
       "dependencies": {
         "com.unity.nuget.mono-cecil": "1.10.1",
         "com.unity.transport": "1.2.0"
-      },
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.10.1",

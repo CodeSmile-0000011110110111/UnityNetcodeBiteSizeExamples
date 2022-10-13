@@ -8,7 +8,7 @@ namespace CodeSmile.Netcode.BiteSize.ConnectionHandling
 	public sealed partial class ConnectionGuiController
 	{
 		public void OnButtonServerShutdown() => ShutdownNetwork();
-		public void OnButtonServerKickClient() => KickClients();
+		public void OnButtonServerKickClient() => KickClients(1);
 		public void OnButtonServerKickAllClients() => KickClients(NetworkManager.Singleton.ConnectedClientsIds.Count);
 		public void OnButtonClientDisconnect() => ShutdownNetwork();
 	}

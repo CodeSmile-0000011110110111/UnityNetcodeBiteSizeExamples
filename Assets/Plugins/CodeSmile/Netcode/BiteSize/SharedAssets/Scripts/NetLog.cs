@@ -18,40 +18,45 @@ namespace CodeSmile.Netcode.BiteSize
 			ErrorServer,
 		}
 
-		public static void LogInfo(string message) => LogInternal("", LogSeverity.Info);
-		public static void LogWarning(string message) => LogInternal("", LogSeverity.Warning);
-		public static void LogError(string message) => LogInternal("", LogSeverity.Error);
-		public static void LogInfoServer(string message) => LogInternal("", LogSeverity.InfoServer);
-		public static void LogWarningServer(string message) => LogInternal("", LogSeverity.WarningServer);
-		public static void LogErrorServer(string message) => LogInternal("", LogSeverity.ErrorServer);
+		public static void LogInfo(string message) => LogInternal(message, LogSeverity.Info);
+		public static void LogWarning(string message) => LogInternal(message, LogSeverity.Warning);
+		public static void LogError(string message) => LogInternal(message, LogSeverity.Error);
+		public static void LogInfoServer(string message) => LogInternal(message, LogSeverity.InfoServer);
+		public static void LogWarningServer(string message) => LogInternal(message, LogSeverity.WarningServer);
+		public static void LogErrorServer(string message) => LogInternal(message, LogSeverity.ErrorServer);
 
 		private static void LogInternal(string message, LogSeverity severity)
 		{
 			var netMan = NetworkManager.Singleton;
 			if (netMan != null)
 			{
-				var serverTime = netMan.NetworkTickSystem.ServerTime;
-				var localTime = netMan.NetworkTickSystem.LocalTime;
-				var log = $"T[s:{serverTime} l:{localTime}] {message}";
+				if (netMan.NetworkTickSystem != null)
+				{
+					var serverTick = netMan.NetworkTickSystem.ServerTime.Tick;
+					var localTick = netMan.NetworkTickSystem.LocalTime.Tick;
+					var timeDiff = localTick - serverTick;
+					message = timeDiff == 0 ?  $"T[{serverTick}] {message}" : $"T[{serverTick}+{timeDiff}] {message}";
+				}
+				
 				switch (severity)
 				{
 					case LogSeverity.Info:
-						NetworkLog.LogInfo(log);
+						NetworkLog.LogInfo(message);
 						break;
 					case LogSeverity.InfoServer:
-						NetworkLog.LogInfoServer(log);
+						NetworkLog.LogInfoServer(message);
 						break;
 					case LogSeverity.Warning:
-						NetworkLog.LogWarning(log);
+						NetworkLog.LogWarning(message);
 						break;
 					case LogSeverity.WarningServer:
-						NetworkLog.LogWarningServer(log);
+						NetworkLog.LogWarningServer(message);
 						break;
 					case LogSeverity.Error:
-						NetworkLog.LogError(log);
+						NetworkLog.LogError(message);
 						break;
 					case LogSeverity.ErrorServer:
-						NetworkLog.LogErrorServer(log);
+						NetworkLog.LogErrorServer(message);
 						break;
 				}
 			}

@@ -1,5 +1,8 @@
 # Unity Netcode BiteSize Examples
-## ![CodeSmile](/Assets/Plugins/CodeSmile/Shared/Textures/CodeSmile-tiny.png) [View Documentation](https://codesmile.gitbook.io/netcode-bitesize-examples/)
+## ![CodeSmile](/Assets/Plugins/CodeSmile/Shared/Textures/CodeSmile-tiny.png) [Documentation (not yet available!)](https://codesmile.de)
+## [View Trello](https://trello.com/b/ITDECbte/netcode-bitesize)
+## [Join Discord](https://discord.gg/56zUz3ZHUJ)
+
 
 With this project I want to learn all about Netcode in detail before I begin applying it to a real project.
 
