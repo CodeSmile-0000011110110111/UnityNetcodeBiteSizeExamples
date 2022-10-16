@@ -25,12 +25,9 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 		private string[] _additiveSceneNames;
 		private bool _quitting;
 
-		private ConnectionManager _connectionManager;
+		private LocalDisconnectManager _localDisconnectManager;
 
-		private void Awake()
-		{
-			_connectionManager = FindObjectOfType<ConnectionManager>();
-		}
+		private void Awake() => _localDisconnectManager = FindObjectOfType<LocalDisconnectManager>();
 
 		public override void OnDestroy()
 		{
@@ -47,7 +44,7 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 				// ensure that we never register twice in case this method is called more than once 
 				RemoveNetworkCallbacks();
 				NetworkManager.SceneManager.OnSceneEvent += OnSceneEvent;
-				_connectionManager.OnNetworkShutdown += OnNetworkShutdown;
+				_localDisconnectManager.OnNetworkShutdown += OnNetworkShutdown;
 			}
 		}
 
@@ -56,7 +53,7 @@ namespace CodeSmile.Netcode.BiteSize.SceneManagement
 			if (NetworkObject != null && NetworkManager?.SceneManager != null)
 			{
 				NetworkManager.SceneManager.OnSceneEvent -= OnSceneEvent;
-				_connectionManager.OnNetworkShutdown -= OnNetworkShutdown;
+				_localDisconnectManager.OnNetworkShutdown -= OnNetworkShutdown;
 			}
 		}
 

@@ -24,10 +24,10 @@ namespace CodeSmile.Netcode.BiteSize.QuickStart
 
 		public void OnOkayButtonClicked()
 		{
-			if (NetcodeQuickStart.StartHost(MenuPrefs.LocalPlayerName, MenuPrefs.HostPort))
-				GoToMenu(typeof(ConnectedMenu));
-			else
-				Debug.LogError("could not start host, see log for details");
+			NetcodeQuickStart.ConnectionAddressData = MenuPrefs.GetConnectionAddressData();
+			NetcodeQuickStart.ConnectionPayloadData = MenuPrefs.GetConnectionPayloadData();
+			NetcodeQuickStart.StartServer(MenuPrefs.IsHost);
+			GoToMenu(typeof(ConnectedMenu));
 		}
 	}
 }

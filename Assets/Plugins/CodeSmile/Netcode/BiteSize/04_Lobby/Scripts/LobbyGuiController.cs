@@ -27,7 +27,13 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 		{
 			var playersReady = FindObjectOfType<NetworkLobbyReadyState>().ArePlayersReady();
 			if (playersReady)
+			{
+				// re-enable rigidbody after lobby
+				foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+					client.PlayerObject.GetComponent<Rigidbody>().isKinematic = false;
+
 				FindObjectOfType<NetworkSceneLoader>().LoadSceneSingleOnDemand();
+			}
 			else
 				Debug.LogWarning("couldn't start game: not all players ready");
 		}
@@ -36,7 +42,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 		{
 			Debug.Log("kick client " + clientLobbyIndex);
 			var clientId = FindObjectOfType<NetworkLobbyPlayerManager>().GetClientId(clientLobbyIndex);
-			FindObjectOfType<ConnectionManager>().KickRemoteClient(clientId);
+			FindObjectOfType<LocalDisconnectManager>().KickRemoteClient(clientId);
 		}
 
 		public void OnButtonClientReadyChanged(Toggle toggle) =>

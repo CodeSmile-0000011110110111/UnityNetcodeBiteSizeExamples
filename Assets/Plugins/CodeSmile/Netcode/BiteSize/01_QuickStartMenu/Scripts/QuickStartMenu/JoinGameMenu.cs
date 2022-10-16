@@ -13,16 +13,18 @@ namespace CodeSmile.Netcode.BiteSize.QuickStart
 
 		private void OnEnable()
 		{
-			_hostAddressInput.text = MenuPrefs.JoinAddress;
-			_hostPortInput.text = MenuPrefs.JoinPort;
+			_hostAddressInput.text = MenuPrefs.ServerAddress;
+			_hostPortInput.text = MenuPrefs.ServerPort;
 		}
 
-		public void OnAddressChanged(string value) => MenuPrefs.JoinAddress = value;
-		public void OnPortChanged(string value) => MenuPrefs.JoinPort = value;
+		public void OnAddressChanged(string value) => MenuPrefs.ServerAddress = value;
+		public void OnPortChanged(string value) => MenuPrefs.ServerPort = value;
 
 		public void OnOkayButtonClicked()
 		{
-			NetcodeQuickStart.StartClient(MenuPrefs.LocalPlayerName, MenuPrefs.JoinAddress, MenuPrefs.JoinPort);
+			NetcodeQuickStart.ConnectionAddressData = MenuPrefs.GetConnectionAddressData();
+			NetcodeQuickStart.ConnectionPayloadData = MenuPrefs.GetConnectionPayloadData();
+			NetcodeQuickStart.StartClient();
 			GoToMenu(typeof(ConnectingMenu));
 		}
 	}

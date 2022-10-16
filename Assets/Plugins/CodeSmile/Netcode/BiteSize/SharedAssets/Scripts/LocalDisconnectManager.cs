@@ -17,8 +17,18 @@ namespace CodeSmile.Netcode.BiteSize
 	/// that message to subscribed systems.
 	/// </summary>
 	[RequireComponent(typeof(NetworkManager))]
-	public class ConnectionManager : MonoBehaviour
+	public class LocalDisconnectManager : MonoBehaviour
 	{
+		/// <summary>
+		/// Invoked locally when the local client disconnects or on the server/host when the server shuts down.
+		/// </summary>
+		public event Action OnNetworkShutdown;
+
+		/// <summary>
+		/// Invoked on the server when a client has been forcefully disconnected.
+		/// </summary>
+		public event Action<ulong, KickReason> OnServerKickedRemoteClient;
+
 		public enum KickReason
 		{
 			None,
@@ -26,16 +36,6 @@ namespace CodeSmile.Netcode.BiteSize
 			Behaviour,
 			ByAuthorityOfTheServer,
 		}
-		
-		/// <summary>
-		/// Invoked locally when the local client disconnects or on the server/host when the server shuts down.
-		/// </summary>
-		public event Action OnNetworkShutdown = null;
-		
-		/// <summary>
-		/// Invoked on the server when a client has been forcefully disconnected.
-		/// </summary>
-		public event Action<ulong, KickReason> OnServerKickedRemoteClient = null;
 
 		private void OnDestroy()
 		{
@@ -77,9 +77,7 @@ namespace CodeSmile.Netcode.BiteSize
 					OnServerKickedRemoteClient?.Invoke(clientId, reason);
 				}
 				else
-				{
 					Debug.LogWarning("KickRemoteClient must be called by Server");
-				}
 			}
 		}
 	}

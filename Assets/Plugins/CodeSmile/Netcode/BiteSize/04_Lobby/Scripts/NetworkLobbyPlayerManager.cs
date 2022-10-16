@@ -11,13 +11,13 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 
 		private Transform[] _spawnLocations;
 		private ulong[] _assignedLocations;
-		private ConnectionManager _connectionManager;
+		private LocalDisconnectManager _localDisconnectManager;
 		private NetworkLobbyReadyState _readyState;
 
 		public override void OnDestroy()
 		{
 			RemoveNetworkManagerCallbacks();
-			_connectionManager = null;
+			_localDisconnectManager = null;
 
 			base.OnDestroy();
 		}
@@ -26,7 +26,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 		{
 			base.OnNetworkSpawn();
 
-			_connectionManager = FindObjectOfType<ConnectionManager>();
+			_localDisconnectManager = FindObjectOfType<LocalDisconnectManager>();
 			_readyState = GetComponent<NetworkLobbyReadyState>();
 
 			AddNetworkManagerCallbacks();
@@ -42,7 +42,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 				RemoveNetworkManagerCallbacks();
 				netMan.OnClientConnectedCallback += OnClientConnected;
 				netMan.OnClientDisconnectCallback += OnClientDisconnect;
-				_connectionManager.OnServerKickedRemoteClient += OnServerKickedRemoteClient;
+				_localDisconnectManager.OnServerKickedRemoteClient += OnServerKickedRemoteClient;
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			{
 				netMan.OnClientConnectedCallback -= OnClientConnected;
 				netMan.OnClientDisconnectCallback -= OnClientDisconnect;
-				_connectionManager.OnServerKickedRemoteClient -= OnServerKickedRemoteClient;
+				_localDisconnectManager.OnServerKickedRemoteClient -= OnServerKickedRemoteClient;
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace CodeSmile.Netcode.BiteSize.Lobby
 			DespawnPlayerObject(clientId);
 		}
 
-		private void OnServerKickedRemoteClient(ulong clientId, ConnectionManager.KickReason reason)
+		private void OnServerKickedRemoteClient(ulong clientId, LocalDisconnectManager.KickReason reason)
 		{
 			Net.LogInfo($"OnKickedRemoteClient({clientId}, {reason})");
 			DespawnPlayerObject(clientId);

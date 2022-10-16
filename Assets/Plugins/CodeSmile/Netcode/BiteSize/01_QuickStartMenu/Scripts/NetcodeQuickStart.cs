@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -9,18 +5,6 @@ using UnityEngine;
 
 namespace CodeSmile.Netcode.BiteSize.QuickStart
 {
-	[Serializable]
-	public struct PlayerInfo
-	{
-		public string Name;
-	}
-
-	[Serializable]
-	public struct ConnectionPayload
-	{
-		public string PlayerName;
-	}
-
 	/// <summary>
 	/// Class to display helper buttons and status labels on the GUI, as well as buttons to start host/client/server.
 	/// Once a connection has been established to the server, the local player can be teleported to random positions via a GUI button.
@@ -28,23 +12,19 @@ namespace CodeSmile.Netcode.BiteSize.QuickStart
 	[RequireComponent(typeof(NetworkManager), typeof(UnityTransport))]
 	public class NetcodeQuickStart : MonoBehaviour
 	{
-		[Tooltip("Arbitrary player name string.")]
-		[SerializeField] private string _playerName = "Player";
-		[Tooltip("Server IP address or hostname. If a public IP or hostname is used the server is in theory accessible from the Internet, " +
-		         "provided that port forwarding has been set up and no firewall is blocking connection attempts.")]
-		[SerializeField] private string _serverAddress = "localhost";
-		[Tooltip("Port the server accepts connections on.")]
-		[SerializeField] private string _serverPort = "7777";
-		[SerializeField] private bool _createPlayerObject = true;
-		[SerializeField] private int _maxConnectedClients = 32;
-
-		private readonly string _serverListenAddress = "0.0.0.0"; // 0.0.0.0 means: listen to all
-
-		private Dictionary<ulong, PlayerInfo> _playerInfos;
+		[Tooltip("True = Player prefab of NetworkManager is spawned automatically. Otherwise server must manually spawn player objects.")]
+		[SerializeField] private bool _autoSpawnPlayerObject = true;
+		[Tooltip("How many clients can connect. Max. 256 clients seemed like a (very) reasonable limit.")]
+		[SerializeField] [Range(2, 256)] private int _maxConnectedClients = 32;
+		[Tooltip("Defaults to 0.0.0.0 - this means: listen to all incoming connections.")]
+		[SerializeField] private string _serverListenAddress = ConnectionAddressData.DefaultListenAddress;
 
 		private void Start() => AddNetworkManagerCallbacks();
 
 		private void OnDestroy() => RemoveNetworkManagerCallbacks();
+
+		public ConnectionAddressData ConnectionAddressData { get; set; }
+		public ConnectionPayloadData ConnectionPayloadData { get; set; }
 
 		private void AddNetworkManagerCallbacks()
 		{
@@ -54,10 +34,10 @@ namespace CodeSmile.Netcode.BiteSize.QuickStart
 				// ensure we never register callbacks twice
 				RemoveNetworkManagerCallbacks();
 
-				netMan.ConnectionApprovalCallback += ConnectionApproval;
+				netMan.ConnectionApprovalCallback += OnConnectionApproval;
 				netMan.OnServerStarted += OnServerStarted;
 				netMan.OnClientConnectedCallback += OnClientConnected;
-				netMan.OnClientDisconnectCallback += OnClientDisconnected;
+				netMan.OnClientDisconnectCallback += OnClientDisconnect;
 				netMan.OnTransportFailure += OnTransportFailure;
 			}
 		}
@@ -67,148 +47,97 @@ namespace CodeSmile.Netcode.BiteSize.QuickStart
 			var netMan = NetworkManager.Singleton;
 			if (netMan != null)
 			{
-				netMan.ConnectionApprovalCallback -= ConnectionApproval;
+				netMan.ConnectionApprovalCallback -= OnConnectionApproval;
 				netMan.OnServerStarted -= OnServerStarted;
 				netMan.OnClientConnectedCallback -= OnClientConnected;
-				netMan.OnClientDisconnectCallback -= OnClientDisconnected;
+				netMan.OnClientDisconnectCallback -= OnClientDisconnect;
 				netMan.OnTransportFailure -= OnTransportFailure;
 			}
 		}
 
-		private void OnServerStarted()
+		private void OnServerStarted() => Net.LogInfo($"=> OnServerStarted - ServerClientId: {NetworkManager.ServerClientId}");
+
+		private void OnClientConnected(ulong clientId) => Net.LogInfoServer($"=> OnClientConnected({clientId})");
+
+		private void OnClientDisconnect(ulong clientId) => Net.LogInfoServer($"=> OnClientDisonnect({clientId})");
+
+		private void OnTransportFailure() => Net.LogErrorServer("=> OnTransportFailure");
+
+		public bool StartServer(bool isHost = false)
 		{
-			// if we're hosting we're not getting client connected event, so call it manually
-			var netMan = NetworkManager.Singleton;
-			if (netMan.IsHost)
-				OnClientConnected(netMan.LocalClientId);
-		}
-
-		private void OnClientConnected(ulong clientId)
-		{
-			var netMan = NetworkManager.Singleton;
-
-			// FIXME: hack for late joins
-			if (netMan.IsServer)
-				StartCoroutine(UpdatePlayerNames());
-		}
-
-		private void OnClientDisconnected(ulong clientId)
-		{
-			var netMan = NetworkManager.Singleton;
-			if (netMan.IsServer)
-				_playerInfos.Remove(clientId);
-			else if (clientId == netMan.LocalClientId)
-			{
-				// perform any cleanup of local player here ...
-			}
-		}
-
-		private void OnTransportFailure() => NetworkLog.LogErrorServer("OnTransportFailure");
-
-		public bool StartHost(string playerName, string port)
-		{
-			_playerName = playerName;
-			_serverPort = port;
-			return StartHost();
-		}
-
-		private void StartServer()
-		{
-			_playerInfos = new Dictionary<ulong, PlayerInfo>();
-			SetServerTransportConnectionData();
-			NetworkManager.Singleton.StartServer();
-		}
-
-		private bool StartHost()
-		{
-			_playerInfos = new Dictionary<ulong, PlayerInfo>();
-			SetServerTransportConnectionData();
+			SetTransportConnectionData(NetcodeHelper.GetFirstLocalIPv4());
 			SetConnectionPayload();
-			return NetworkManager.Singleton.StartHost();
+
+			//Debug.Log($"StartServer with payload: {ConnectionPayloadData}");
+
+			var netMan = NetworkManager.Singleton;
+			var didStart = isHost ? netMan.StartHost() : netMan.StartServer();
+			if (didStart)
+				GetComponent<ServerPlayerManager>().Init();
+
+			return didStart;
 		}
 
-		public void StartClient(string playerName, string hostAddress, string port)
+		public void StartClient()
 		{
-			_playerName = playerName;
-			_serverAddress = hostAddress;
-			_serverPort = port;
-			SetClientTransportConnectionData();
+			Destroy(GetComponent<ServerPlayerManager>());
+			SetTransportConnectionData(NetcodeHelper.TryResolveHostname(ConnectionAddressData.Address));
 			SetConnectionPayload();
+
+			//Debug.Log($"StartClient with payload: {ConnectionPayloadData}");
+
 			NetworkManager.Singleton.StartClient();
 		}
 
-		private void SetConnectionPayload()
+		private void SetConnectionPayload() => NetworkManager.Singleton.NetworkConfig.ConnectionData =
+			Encoding.ASCII.GetBytes(JsonUtility.ToJson(ConnectionPayloadData));
+
+		private void SetTransportConnectionData(string ipAddress)
 		{
-			var payload = JsonUtility.ToJson(new ConnectionPayload { PlayerName = _playerName });
-			NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes(payload);
+			ushort.TryParse(ConnectionAddressData.Port, out var port);
+			GetComponent<UnityTransport>().SetConnectionData(ipAddress, port, _serverListenAddress);
 		}
 
-		private void SetServerTransportConnectionData() =>
-			SetTransportConnectionData(NetcodeHelper.GetLocalIPv4()?.FirstOrDefault());
-
-		private void SetClientTransportConnectionData() =>
-			SetTransportConnectionData(NetcodeHelper.ResolveHostname(_serverAddress)?.FirstOrDefault()?.ToString());
-
-		private void SetTransportConnectionData(string ip)
+		private void OnConnectionApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
 		{
-			ushort.TryParse(_serverPort, out var port);
-			GetComponent<UnityTransport>().SetConnectionData(ip, port, _serverListenAddress);
-		}
+			Net.LogInfo($"=> OnConnectionApproval({request.ClientNetworkId})");
 
-		private void ConnectionApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
-		{
-			// don't allow more players than max
+			var clientId = request.ClientNetworkId;
+
+			// Don't allow more players than max
 			if (NetworkManager.Singleton.ConnectedClientsList.Count >= _maxConnectedClients)
 			{
-				NetworkLog.LogWarningServer($"Server rejected connection request: server full ({_maxConnectedClients} clients)");
+				Net.LogWarning($"Server rejected clientId {clientId}: server full ({_maxConnectedClients} connections)");
 				response.Approved = false;
 				return;
 			}
-			
-			var payload = JsonUtility.FromJson<ConnectionPayload>(Encoding.ASCII.GetString(request.Payload));
-			_playerInfos.Add(request.ClientNetworkId, new PlayerInfo { Name = payload.PlayerName });
 
-			response.CreatePlayerObject = _createPlayerObject;
-			response.Rotation = Quaternion.identity;
-			response.Position = Vector3.one;
-			response.Approved = true;
-		}
+			var payloadJson = Encoding.ASCII.GetString(request.Payload);
+			var payload = JsonUtility.FromJson<ConnectionPayloadData>(payloadJson);
 
-		public PlayerInfo GetPlayerInfo(ulong clientId)
-		{
-			if (_playerInfos.ContainsKey(clientId))
-				return _playerInfos[clientId];
+			// Always accept the host!
+			var isHost = clientId == NetworkManager.ServerClientId;
+			response.Approved = isHost || CheckMatchingPasswords(payload.PasswordHash);
 
-			return default;
-		}
-
-		private IEnumerator UpdatePlayerNames()
-		{
-			yield return new WaitForSeconds(.3f);
-
-			/*
-			var players = FindObjectsOfType<PlayerNetworkBehaviour>();
-			foreach (var player in players)
-				player.ReSendPlayerName();
-			*/
-		}
-
-		[ServerRpc]
-		public void GetPlayerNameViaServerRpc(ServerRpcParams serverRpcParams = default)
-		{
-			/*
-			var clientId = serverRpcParams.Receive.SenderClientId;
-			if (NetworkManager.ConnectedClients.ContainsKey(clientId))
+			if (response.Approved)
 			{
-				//var client = NetworkManager.ConnectedClients[clientId];
-
-				if (_playerInfos.ContainsKey(clientId) == false)
-					Debug.LogError($"no player info for {clientId}");
-				else
-					return _playerInfos[clientId].Name;
+				response.CreatePlayerObject = _autoSpawnPlayerObject;
+				GetComponent<ServerPlayerManager>().OnClientConnectionApproved(clientId, payload.PlayerData, ref response);
 			}
-			return clientId.ToString();
-			*/
+
+			if (response.Approved == false)
+				Net.LogWarning($"Server rejected clientId {clientId}: password mismatch or ServerPlayerManager rejection");
+		}
+
+		private bool CheckMatchingPasswords(string clientPasswordHash)
+		{
+			// Check connection password hashes (unless server has no password set)
+			var serverPasswordHash = ConnectionPayloadData.PasswordHash;
+			if (string.IsNullOrEmpty(serverPasswordHash))
+				return true;
+
+			Net.LogInfo($"checking client password hash '{clientPasswordHash}' against server's '{serverPasswordHash}'");
+			return serverPasswordHash.Equals(clientPasswordHash);
 		}
 	}
 }

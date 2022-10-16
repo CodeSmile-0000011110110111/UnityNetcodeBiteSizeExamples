@@ -26,7 +26,7 @@ namespace CodeSmile.Netcode.BiteSize.Connection
 					? $"Shutting down server, disconnecting {netMan.ConnectedClientsList.Count} clients .."
 					: "Shutting down client, disconnecting from server (if still connected) ..");
 
-				FindObjectOfType<ConnectionManager>().NetworkShutdown();
+				FindObjectOfType<LocalDisconnectManager>().NetworkShutdown();
 				UpdateGuiActiveState();
 			}
 		}
@@ -55,7 +55,7 @@ namespace CodeSmile.Netcode.BiteSize.Connection
 			var netMan = NetworkManager.Singleton;
 			var clientIds = netMan.ConnectedClientsIds;
 			var clientCount = clientIds.Count;
-			var connMan = FindObjectOfType<ConnectionManager>();
+			var connMan = FindObjectOfType<LocalDisconnectManager>();
 
 			// DisconnectClient() modifies ConnectedClientsIds hence the reverse enumeration
 			for (var i = clientCount - 1; i >= 0; i--)
@@ -67,7 +67,7 @@ namespace CodeSmile.Netcode.BiteSize.Connection
 					continue;
 
 				NetworkLog.LogInfo($"Kicking client {clientId} for no good reason ..");
-				connMan.KickRemoteClient(clientId, ConnectionManager.KickReason.ByAuthorityOfTheServer);
+				connMan.KickRemoteClient(clientId, LocalDisconnectManager.KickReason.ByAuthorityOfTheServer);
 
 				kickThisManyClients--;
 				if (kickThisManyClients <= 0)

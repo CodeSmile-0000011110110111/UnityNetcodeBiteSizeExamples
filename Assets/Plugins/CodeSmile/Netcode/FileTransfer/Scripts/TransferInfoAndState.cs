@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2021-2022 Steffen Itterheim
 // Refer to included LICENSE file for terms and conditions.
 
+using CodeSmile.Netcode.BiteSize.QuickStart;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,18 +39,12 @@ namespace CodeSmile.Netcode.FileTransfer
 		public int DataSize; // in bytes
 		public int PacketCount;
 
-		public static string GetSHA1Hash(IReadOnlyList<byte> data)
-		{
-			using (var sha1 = new SHA1CryptoServiceProvider())
-				return string.Concat(sha1.ComputeHash(data.ToArray()).Select(x => x.ToString("X2")));
-		}
-
 		// required by NetworkManager
 		public VerifyData() {}
 
 		public VerifyData(in byte[] data, int packetCount)
 		{
-			SHA1 = GetSHA1Hash(data);
+			SHA1 = NetcodeHelper.GetSHA1Hash(data);
 			DataSize = data.Length;
 			PacketCount = packetCount;
 		}
@@ -163,7 +158,7 @@ namespace CodeSmile.Netcode.FileTransfer
 		/// Compare hashes of the received data and the hash the sender has sent us.
 		/// </summary>
 		/// <returns>True if the hashes match, false if not which means received data is corrupt or incomplete.</returns>
-		public bool CompareDataHashes() => VerifyData.SHA1.Equals(VerifyData.GetSHA1Hash(DataReceived));
+		public bool CompareDataHashes() => VerifyData.SHA1.Equals(NetcodeHelper.GetSHA1Hash(DataReceived));
 
 		/// <summary>
 		/// Are we currently transferring data?

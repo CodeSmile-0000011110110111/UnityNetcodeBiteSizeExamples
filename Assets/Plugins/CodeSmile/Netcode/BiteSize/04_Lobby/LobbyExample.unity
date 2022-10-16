@@ -304,11 +304,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4ea74fc7eadb946bddf8933b77f682, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerName: Player
-  _serverAddress: localhost
-  _serverPort: 7777
-  _createPlayerObject: 0
+  _autoSpawnPlayerObject: 0
   _maxConnectedClients: 4
+  _serverListenAddress: 0.0.0.0
 --- !u!114 &8600705458239003192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,7 +352,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 8600705458239003192}
-    PlayerPrefab: {fileID: 0}
+    PlayerPrefab: {fileID: 5272433274785593080, guid: 0edc03e7a650b454e920303d8509e610, type: 3}
     NetworkPrefabs:
     - Override: 0
       Prefab: {fileID: 5272433274785593080, guid: f7b51f886a984074cab169d572ae3f01, type: 3}
@@ -401,8 +399,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8600705458239003199}
   - component: {fileID: 5757550132566615234}
-  - component: {fileID: 8600705458239003193}
   - component: {fileID: 8600705458239003200}
+  - component: {fileID: 8600705458239003201}
+  - component: {fileID: 8600705458239003193}
   - component: {fileID: 8600705458239003192}
   m_Layer: 0
   m_Name: NetcodeBootstrap (unpacked)
@@ -436,5 +435,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f821e51378b43cfb8d85404a0f7a06e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8600705458239003201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8600705458239003195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d9d78c16a941f88b8e9bc5d8f32eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

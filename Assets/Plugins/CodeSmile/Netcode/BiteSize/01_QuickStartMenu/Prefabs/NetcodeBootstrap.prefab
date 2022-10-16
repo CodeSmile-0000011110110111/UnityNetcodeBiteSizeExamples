@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8600705459023448286}
   - component: {fileID: 5757550133216589347}
-  - component: {fileID: 8600705459023448280}
   - component: {fileID: 7616962413688137815}
+  - component: {fileID: 4505131334619337607}
+  - component: {fileID: 8600705459023448280}
   - component: {fileID: 8600705459023448281}
   m_Layer: 0
   m_Name: NetcodeBootstrap
@@ -47,11 +48,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4ea74fc7eadb946bddf8933b77f682, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerName: Player
-  _serverAddress: localhost
-  _serverPort: 7777
-  _createPlayerObject: 1
+  _autoSpawnPlayerObject: 1
   _maxConnectedClients: 32
+  _serverListenAddress: 0.0.0.0
+--- !u!114 &7616962413688137815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8600705459023448282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f821e51378b43cfb8d85404a0f7a06e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4505131334619337607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8600705459023448282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d9d78c16a941f88b8e9bc5d8f32eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8600705459023448280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,18 +109,6 @@ MonoBehaviour:
     LoadSceneTimeOut: 120
     SpawnTimeout: 1
     EnableNetworkLogs: 1
---- !u!114 &7616962413688137815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8600705459023448282}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f821e51378b43cfb8d85404a0f7a06e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8600705459023448281
 MonoBehaviour:
   m_ObjectHideFlags: 0
