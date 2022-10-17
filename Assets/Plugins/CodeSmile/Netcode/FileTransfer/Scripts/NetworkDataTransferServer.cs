@@ -1,7 +1,6 @@
 ﻿// Copyright (C) 2021-2022 Steffen Itterheim
 // Refer to included LICENSE file for terms and conditions.
 
-using CodeSmile.Netcode.BiteSize.QuickStart;
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -48,7 +47,7 @@ namespace CodeSmile.Netcode.FileTransfer
 		internal void InitiateTransferToClient(IReadOnlyList<byte> data, ulong clientId, ushort packetSize)
 		{
 			_sendingTransfer = new TransferInfo(data, packetSize);
-			_client.RequestServerTransfer_ClientRpc(_sendingTransfer.VerifyData, NetcodeHelper.SendTo(clientId));
+			_client.RequestServerTransfer_ClientRpc(_sendingTransfer.VerifyData, NetcodeUtils.SendTo(clientId));
 		}
 
 		private void SendNextPacketToClient(ulong clientId)
@@ -56,11 +55,11 @@ namespace CodeSmile.Netcode.FileTransfer
 			_sendingTransfer.State = TransferState.Transferring;
 			_sendingTransfer.GetNextPacketData(out var packetData);
 			if (packetData != null)
-				_client.SendServerData_ClientRpc(packetData, NetcodeHelper.SendTo(clientId));
+				_client.SendServerData_ClientRpc(packetData, NetcodeUtils.SendTo(clientId));
 			else
 			{
 				_sendingTransfer.State = TransferState.Completed;
-				_client.FinishedServerTransfer_ClientRpc(NetcodeHelper.SendTo(clientId));
+				_client.FinishedServerTransfer_ClientRpc(NetcodeUtils.SendTo(clientId));
 			}
 		}
 
@@ -129,7 +128,7 @@ namespace CodeSmile.Netcode.FileTransfer
 			AddReceivingTransfer(clientId, receivingTransfer);
 			
 			_controller.ServerReceiver?.OnServerReceiveRequested(receivingTransfer);
-			_client.AckRequestClientTransfer_ClientRpc(receivingTransfer.State, NetcodeHelper.SendTo(rpcParams));
+			_client.AckRequestClientTransfer_ClientRpc(receivingTransfer.State, NetcodeUtils.SendTo(rpcParams));
 			
 			if (receivingTransfer.State == TransferState.Aborted)
 				RemoveReceivingTransfer(clientId);
@@ -149,7 +148,7 @@ namespace CodeSmile.Netcode.FileTransfer
 			receivingTransfer.AddReceivedPacketData(packetData);
 
 			_controller.ServerReceiver?.OnServerReceiveProgress(receivingTransfer);
-			_client.AckSendClientData_ClientRpc(receivingTransfer.State, NetcodeHelper.SendTo(rpcParams));
+			_client.AckSendClientData_ClientRpc(receivingTransfer.State, NetcodeUtils.SendTo(rpcParams));
 			
 			if (receivingTransfer.State == TransferState.Aborted)
 				RemoveReceivingTransfer(clientId);
@@ -168,7 +167,7 @@ namespace CodeSmile.Netcode.FileTransfer
 			receivingTransfer.State = hashesMatch ? TransferState.Completed : TransferState.ValidationFailed;
 
 			_controller.ServerReceiver?.OnServerReceiveFinished(receivingTransfer);
-			_client.AckFinishedClientTransfer_ClientRpc(receivingTransfer.State, NetcodeHelper.SendTo(rpcParams));
+			_client.AckFinishedClientTransfer_ClientRpc(receivingTransfer.State, NetcodeUtils.SendTo(rpcParams));
 			RemoveReceivingTransfer(clientId);
 		}
 	}
