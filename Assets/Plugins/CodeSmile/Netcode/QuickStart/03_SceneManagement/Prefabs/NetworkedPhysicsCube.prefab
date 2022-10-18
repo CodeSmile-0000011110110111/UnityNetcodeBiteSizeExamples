@@ -15,8 +15,7 @@ GameObject:
   - component: {fileID: 6313956388189505842}
   - component: {fileID: 6313956388189505853}
   - component: {fileID: 6313956388189505843}
-  - component: {fileID: 6313956388189505840}
-  - component: {fileID: 6516786234527352109}
+  - component: {fileID: -3426207354681488682}
   m_Layer: 0
   m_Name: NetworkedPhysicsCube
   m_TagString: Untagged
@@ -34,6 +33,7 @@ Transform:
   m_LocalRotation: {x: 0.09826805, y: 0.09192308, z: -0.07460461, w: 0.988093}
   m_LocalPosition: {x: -3.01, y: 10.43, z: -3.3}
   m_LocalScale: {x: 2, y: 4, z: 2}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -57,6 +57,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -158,19 +159,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6313956388189505840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6313956388189505848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6516786234527352109
+--- !u!114 &-3426207354681488682
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -33,7 +33,7 @@ namespace CodeSmile.Netcode.QuickStart
 					client.PlayerObject.GetComponent<Rigidbody>().isKinematic = false;
 
 				// disallow late-joins in lobby-based game sessions
-				FindObjectOfType<NetcodeBootstrap>().IsClosedSession = true;
+				FindObjectOfType<NetcodeBootstrap>().IsSessionClosed = true;
 
 				FindObjectOfType<NetworkSceneLoader>().LoadSceneSingleOnDemand();
 			}

@@ -28,7 +28,7 @@ namespace CodeSmile.Netcode
 		[field: Tooltip("If true, disallows any further client connections. For Lobby-based games that do not allow late joins. " +
 		                "Intended to be modified at runtime only, ie server toggles it on after Lobby when session starts. " +
 		                "Automatically resets to false when StartServer() is called.")]
-		[field: SerializeField] public bool IsClosedSession { get; set; }
+		[field: SerializeField] public bool IsSessionClosed { get; set; }
 
 		public ConnectionAddressData ConnectionAddressData { get; set; }
 		public ConnectionPayloadData ConnectionPayloadData { get; set; }
@@ -73,7 +73,7 @@ namespace CodeSmile.Netcode
 		public bool StartServer(bool isHost = false)
 		{
 			// ensure clients can join when server starts
-			IsClosedSession = false;
+			IsSessionClosed = false;
 
 			SetTransportConnectionData(NetcodeUtils.GetFirstLocalIPv4());
 			SetConnectionPayload();
@@ -115,7 +115,7 @@ namespace CodeSmile.Netcode
 			// isHost ensures the host always gets accepted (host is required to be accepted!)
 			var isHost = clientId == NetworkManager.ServerClientId;
 
-			response.Approved = isHost || IsClosedSession;
+			response.Approved = isHost || IsSessionClosed == false;
 			if (response.Approved == false)
 			{
 				Net.LogWarning($"Server rejected connection of clientId {clientId}: session is closed, joining mid-game disallowed");
@@ -123,7 +123,7 @@ namespace CodeSmile.Netcode
 			}
 
 			// Don't allow more players than max
-			response.Approved = isHost || NetworkManager.Singleton.ConnectedClientsList.Count >= MaxConnectedClients;
+			response.Approved = isHost || IsAcceptingConnections();
 			if (response.Approved == false)
 			{
 				Net.LogWarning($"Server rejected connection of clientId {clientId}: server full ({MaxConnectedClients} connections)");
@@ -134,7 +134,7 @@ namespace CodeSmile.Netcode
 			var payloadJson = Encoding.ASCII.GetString(request.Payload);
 			var payload = JsonUtility.FromJson<ConnectionPayloadData>(payloadJson);
 
-			response.Approved = isHost || CheckMatchingPasswords(payload.PasswordHash);
+			response.Approved = isHost || IsPasswordMatching(payload.PasswordHash);
 			if (response.Approved == false)
 			{
 				Net.LogWarning($"Server rejected connection of clientId {clientId}: password mismatch");
@@ -155,7 +155,9 @@ namespace CodeSmile.Netcode
 			Net.LogInfo($"\tclient {clientId} connection accepted - {payload}");
 		}
 
-		private bool CheckMatchingPasswords(string clientPasswordHash)
+		private bool IsAcceptingConnections() => NetworkManager.Singleton.ConnectedClientsList.Count < MaxConnectedClients;
+
+		private bool IsPasswordMatching(string clientPasswordHash)
 		{
 			// Check connection password hashes (unless server has no password set)
 			var serverPasswordHash = ConnectionPayloadData.PasswordHash;
