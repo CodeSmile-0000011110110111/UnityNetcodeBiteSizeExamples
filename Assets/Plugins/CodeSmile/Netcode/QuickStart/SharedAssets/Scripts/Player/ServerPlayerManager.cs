@@ -57,12 +57,15 @@ namespace CodeSmile.Netcode
 
 		private void OnClientDisconnect(ulong clientId)
 		{
-			Net.LogInfo($"=> ServerPlayerManager OnClientDisonnect({clientId})");
+			if (NetworkManager.Singleton.IsServer)
+			{
+				Net.LogInfo($"=> ServerPlayerManager OnClientDisonnect({clientId})");
 
-			var playerData = GetPlayerData(clientId);
-			playerData.Connected = false;
-			playerData.ClientId = ulong.MaxValue;
-			SetPlayerData(clientId, playerData);
+				var playerData = GetPlayerData(clientId);
+				playerData.Connected = false;
+				playerData.ClientId = ulong.MaxValue;
+				SetPlayerData(clientId, playerData);
+			}
 		}
 
 		public void OnClientConnectionApproved(ulong clientId, NetworkPlayerData networkPlayerData,

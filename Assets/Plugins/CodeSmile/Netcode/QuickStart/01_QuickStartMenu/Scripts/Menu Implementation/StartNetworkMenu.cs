@@ -70,10 +70,15 @@ namespace CodeSmile.Netcode.QuickStart
 			NetcodeBootstrap.ConnectionAddressData = MenuPrefs.GetConnectionAddressData();
 			NetcodeBootstrap.ConnectionPayloadData = MenuPrefs.GetConnectionPayloadData();
 			if (asClient)
+			{
 				NetcodeBootstrap.StartClient();
+				GoToMenu(typeof(ConnectingMenu));
+			}
 			else
+			{
 				NetcodeBootstrap.StartServer(MenuPrefs.IsHost);
-			GoToMenu(typeof(ConnectedMenu));
+				GoToMenu(typeof(ConnectedMenu));
+			}
 		}
 	}
 }

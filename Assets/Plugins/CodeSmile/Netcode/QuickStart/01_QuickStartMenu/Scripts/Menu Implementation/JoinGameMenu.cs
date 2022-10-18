@@ -15,6 +15,7 @@ namespace CodeSmile.Netcode.QuickStart
 		{
 			_hostAddressInput.text = MenuPrefs.ServerAddress;
 			_hostPortInput.text = MenuPrefs.ServerPort;
+			PreviousMenu = typeof(StartNetworkMenu);
 		}
 
 		public void OnAddressChanged(string value) => MenuPrefs.ServerAddress = value;

@@ -90,7 +90,6 @@ namespace CodeSmile.Netcode
 
 		public void StartClient()
 		{
-			Destroy(GetComponent<ServerPlayerManager>());
 			SetTransportConnectionData(NetcodeUtils.TryResolveHostname(ConnectionAddressData.Address));
 			SetConnectionPayload();
 
