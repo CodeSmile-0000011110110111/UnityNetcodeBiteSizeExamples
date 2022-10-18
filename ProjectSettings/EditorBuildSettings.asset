@@ -6,39 +6,39 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/02_ConnectionManagement/ConnectionManagementExample.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/02_ConnectionManagement/ConnectionManagementExample.unity
     guid: 3bf4d6382fcb52142adc432ce91e4dee
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/01_QuickStartMenu/QuickStartMenuExample.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/01_QuickStartMenu/QuickStartMenuExample.unity
     guid: 9cb1a7311341007459fe3236030109aa
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/SceneManagementExample.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/SceneManagementExample.unity
     guid: 8095fda7a9b06cf4abe0e8c7e3696a28
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/Scenes/MainMenu.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/Scenes/MainMenu.unity
     guid: cc8d0bae753301241962323c7aae9714
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/Scenes/GameScene.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/Scenes/GameScene.unity
     guid: 01cce8e1c7c27834dad35d05c2d9b062
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/Scenes/TotallyDifferentGameScene.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/Scenes/TotallyDifferentGameScene.unity
     guid: 1d8e9b6e56d3a9f4199c77a31e91a011
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/Scenes/AdditiveScene1.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/Scenes/AdditiveScene1.unity
     guid: 60cceb7953a34464bb23a4193b666150
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/Scenes/AdditiveScene2.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/Scenes/AdditiveScene2.unity
     guid: 9ab40c428a8785b45b36ae97cadb75a6
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/03_SceneManagement/Scenes/AdditiveScene3.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/03_SceneManagement/Scenes/AdditiveScene3.unity
     guid: 000ecd23a749ba24c8fff162387cac13
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/04_Lobby/LobbyExample.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/04_Lobby/LobbyExample.unity
     guid: 86926e6bf5eefcd44a4d86692f4d5ee7
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/04_Lobby/Scenes/LobbyMainMenu.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/04_Lobby/Scenes/LobbyMainMenu.unity
     guid: 49069f53ccc9bb742ba232069d74980e
   - enabled: 1
-    path: Assets/Plugins/CodeSmile/Netcode/BiteSize/04_Lobby/Scenes/LobbyScene.unity
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/04_Lobby/Scenes/LobbyScene.unity
     guid: 1e4c0ca029c3755469a452563151c8d2
   m_configObjects: {}
