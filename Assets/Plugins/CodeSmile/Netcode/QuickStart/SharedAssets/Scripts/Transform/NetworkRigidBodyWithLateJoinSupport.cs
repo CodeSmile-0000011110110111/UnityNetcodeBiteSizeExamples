@@ -41,9 +41,8 @@ namespace CodeSmile.Netcode
 			var rigidbody = GetComponent<Rigidbody>();
 			if (rigidbody.IsSleeping())
 			{
-				//Net.LogInfo($"waking up rigidbody of: {name}");
-				var networkTransform = GetComponent<NetworkTransform>();
-				networkTransform.Teleport(rigidbody.position, rigidbody.rotation, transform.localScale);
+				var netTransform = GetComponent<NetworkTransform>();
+				netTransform.Teleport(rigidbody.position, rigidbody.rotation, transform.localScale);
 			}
 		}
 	}

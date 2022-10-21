@@ -41,4 +41,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Plugins/CodeSmile/Netcode/QuickStart/04_Lobby/Scenes/LobbyScene.unity
     guid: 1e4c0ca029c3755469a452563151c8d2
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Plugins/CodeSmile/Netcode/QuickStart/05_CharacterController/3rdPersonControllerExample.unity
+    guid: 44688a638c6ac474ca11cdf3382fa183
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 53757b4e3442db3459b2ecf5b3aaebd2, type: 2}

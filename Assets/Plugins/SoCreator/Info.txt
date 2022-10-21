@@ -1,0 +1,18 @@
+ScriptableObjectCreator
+
+Menu
+	Options can be found in Preferences/SoCreator.
+	Include assemblies and Type path are specific for each project and are stored in ProjectSettings\SOCreatorPrefs.json.
+	Type path places created ScriptableObject derived from a base type to a specified folder.
+	
+Shortcuts
+	Shortcuts can be edited in Edit>Shortcuts... SoCreator/
+	Default shortcuts 
+		Shift + I -> Create ScriptableObject with type type path check
+		Ctrl + Shift + I  -> Create ScriptableObject normally
+
+Misc
+	Classes can be marked with SoCreateAttribute to manually define their visibility.
+	If shift key held when opening creation menu ScriptableObjects from all assemblies will be searched.
+	
+Git - https://github.com/NullTale/ScriptableObjectCreator
