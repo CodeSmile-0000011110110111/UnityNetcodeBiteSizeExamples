@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Unity.Netcode;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	public static class NetcodeUtils
 	{

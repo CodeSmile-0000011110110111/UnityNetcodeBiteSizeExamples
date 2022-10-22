@@ -372,8 +372,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582035430}
-  m_LocalRotation: {x: 0.013025589, y: -0.9080736, z: -0.028334523, w: -0.4176481}
-  m_LocalPosition: {x: -16.047403, y: 3.8028555, z: 30.52134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.85, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -574,6 +574,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5757550133216589347, guid: 02f3d99613d2ad34d99252940f675a25, type: 3}
+      propertyPath: <PayloadEncoding>k__BackingField
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8600705459023448282, guid: 02f3d99613d2ad34d99252940f675a25, type: 3}
       propertyPath: m_Name
       value: NetcodeBootstrap

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Stores and gives access to NetworkPlayerData instances of clients on the server-side.
@@ -15,10 +15,17 @@ namespace CodeSmile.Netcode
 	public class ServerPlayerManager : MonoBehaviour
 	{
 		private readonly Dictionary<ulong, NetworkPlayerData> _playerDatas = new();
-
 		public void Init() => AddNetworkManagerCallbacks();
 
+		private void OnEnable()
+		{
+			if (Singleton == null)
+				Singleton = this;
+		}
+
 		private void OnDestroy() => RemoveNetworkManagerCallbacks();
+
+		public static ServerPlayerManager Singleton { get; private set; }
 
 		public NetworkPlayerData GetPlayerData(ulong clientId)
 		{
@@ -74,8 +81,9 @@ namespace CodeSmile.Netcode
 			Net.LogInfo($"=> ServerPlayerManager OnClientConnectionApproved({clientId})");
 
 			// TODO: look for an appropriate spawn location, or identify player and use its last known position
-			response.Position = networkPlayerData.Position;
-			response.Rotation = networkPlayerData.Rotation;
+			// or verify the provided position & rotation for validity
+			response.Position = networkPlayerData.StartPosition;
+			response.Rotation = networkPlayerData.StartRotation;
 
 			networkPlayerData.Connected = response.Approved;
 			SetPlayerData(clientId, networkPlayerData);

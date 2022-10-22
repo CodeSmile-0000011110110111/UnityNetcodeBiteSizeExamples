@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Handles scene loading on events (spawn, despawn), on demand and additive scenes.

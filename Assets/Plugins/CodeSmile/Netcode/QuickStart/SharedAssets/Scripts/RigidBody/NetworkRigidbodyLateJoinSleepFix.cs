@@ -4,14 +4,14 @@
 using Unity.Netcode.Components;
 using UnityEngine;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Use this instead of NetworkRigidBody to ensure that sleeping body's transform is sent to
 	/// late-joining clients by calling NetworkTransform.Teleport() with current transform values.
 	/// </summary>
 	[DisallowMultipleComponent]
-	public sealed class NetworkRigidBodyWithLateJoinSupport : NetworkRigidbody
+	public sealed class NetworkRigidbodyLateJoinSleepFix : NetworkRigidbody
 	{
 		public override void OnNetworkSpawn()
 		{

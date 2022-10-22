@@ -3,7 +3,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Class to display helper buttons and status labels on the GUI, as well as buttons to start host/client/server.
@@ -12,6 +12,16 @@ namespace CodeSmile.Netcode
 	[RequireComponent(typeof(NetworkManager), typeof(UnityTransport), typeof(NetworkDisconnectManager))]
 	public class NetcodeBootstrap : MonoBehaviour
 	{
+		public enum ConnectionPayloadEncoding
+		{
+			ASCII,
+			UTF7,
+			UTF8,
+			UTF32,
+			Unicode,
+			BigEndianUnicode,
+		}
+
 		private void Start() => AddNetworkManagerCallbacks();
 
 		private void OnDestroy() => RemoveNetworkManagerCallbacks();
@@ -24,6 +34,9 @@ namespace CodeSmile.Netcode
 
 		[field: Tooltip("Defaults to '0.0.0.0' which means: server listens to all incoming connections.")]
 		[field: SerializeField] public string ServerListenAddress { get; set; } = ConnectionAddressData.DefaultListenAddress;
+
+		[field: Tooltip("Set encoding of payload data. Change this if any payload text (eg player's name) is missing characters.")]
+		[field: SerializeField] public ConnectionPayloadEncoding PayloadEncoding { get; set; }
 
 		[field: Tooltip("If true, disallows any further client connections. For Lobby-based games that do not allow late joins. " +
 		                "Intended to be modified at runtime only, ie server toggles it on after Lobby when session starts. " +
@@ -72,18 +85,17 @@ namespace CodeSmile.Netcode
 
 		public bool StartServer(bool isHost = false)
 		{
+			var netMan = NetworkManager.Singleton;
+
 			// ensure clients can join when server starts
 			IsSessionClosed = false;
 
 			SetTransportConnectionData(NetcodeUtils.GetFirstLocalIPv4());
-			SetConnectionPayload();
+			netMan.NetworkConfig.ConnectionData = SerializeConnectionPayload();
 
-			//Debug.Log($"StartServer with payload: {ConnectionPayloadData}");
-
-			var netMan = NetworkManager.Singleton;
 			var didStart = isHost ? netMan.StartHost() : netMan.StartServer();
 			if (didStart)
-				GetComponent<ServerPlayerManager>().Init();
+				ServerPlayerManager.Singleton.Init();
 
 			return didStart;
 		}
@@ -91,15 +103,40 @@ namespace CodeSmile.Netcode
 		public void StartClient()
 		{
 			SetTransportConnectionData(NetcodeUtils.TryResolveHostname(ConnectionAddressData.Address));
-			SetConnectionPayload();
 
-			//Debug.Log($"StartClient with payload: {ConnectionPayloadData}");
-
-			NetworkManager.Singleton.StartClient();
+			var netMan = NetworkManager.Singleton;
+			netMan.NetworkConfig.ConnectionData = SerializeConnectionPayload();
+			netMan.StartClient();
 		}
 
-		private void SetConnectionPayload() => NetworkManager.Singleton.NetworkConfig.ConnectionData =
-			Encoding.ASCII.GetBytes(JsonUtility.ToJson(ConnectionPayloadData));
+		private byte[] SerializeConnectionPayload()
+		{
+			var json = JsonUtility.ToJson(ConnectionPayloadData);
+			return PayloadEncoding switch
+			{
+				ConnectionPayloadEncoding.ASCII => Encoding.ASCII.GetBytes(json),
+				ConnectionPayloadEncoding.UTF7 => Encoding.UTF7.GetBytes(json),
+				ConnectionPayloadEncoding.UTF8 => Encoding.UTF8.GetBytes(json),
+				ConnectionPayloadEncoding.UTF32 => Encoding.UTF32.GetBytes(json),
+				ConnectionPayloadEncoding.Unicode => Encoding.Unicode.GetBytes(json),
+				ConnectionPayloadEncoding.BigEndianUnicode => Encoding.BigEndianUnicode.GetBytes(json),
+				_ => Encoding.ASCII.GetBytes(json)
+			};
+		}
+
+		private string GetPayloadJson(NetworkManager.ConnectionApprovalRequest request) => PayloadEncoding switch
+		{
+			ConnectionPayloadEncoding.ASCII => Encoding.ASCII.GetString(request.Payload),
+			ConnectionPayloadEncoding.UTF7 => Encoding.UTF7.GetString(request.Payload),
+			ConnectionPayloadEncoding.UTF8 => Encoding.UTF8.GetString(request.Payload),
+			ConnectionPayloadEncoding.UTF32 => Encoding.UTF32.GetString(request.Payload),
+			ConnectionPayloadEncoding.Unicode => Encoding.Unicode.GetString(request.Payload),
+			ConnectionPayloadEncoding.BigEndianUnicode => Encoding.BigEndianUnicode.GetString(request.Payload),
+			_ => Encoding.ASCII.GetString(request.Payload),
+		};
+
+		private ConnectionPayloadData DeserializeConnectionPayload(NetworkManager.ConnectionApprovalRequest request) =>
+			JsonUtility.FromJson<ConnectionPayloadData>(GetPayloadJson(request));
 
 		private void SetTransportConnectionData(string ipAddress)
 		{
@@ -130,10 +167,7 @@ namespace CodeSmile.Netcode
 				return;
 			}
 
-			// deserialize the payload data
-			var payloadJson = Encoding.ASCII.GetString(request.Payload);
-			var payload = JsonUtility.FromJson<ConnectionPayloadData>(payloadJson);
-
+			var payload = DeserializeConnectionPayload(request);
 			response.Approved = isHost || IsPasswordMatching(payload.PasswordHash);
 			if (response.Approved == false)
 			{

@@ -10,8 +10,6 @@ namespace CodeSmile.Netcode.QuickStart
 	{
 		[SerializeField] private TMP_Text _label;
 
-		//private void LateUpdate() => _label.rectTransform.position = RectTransformUtility.WorldToScreenPoint(Camera.main, transform.parent.position + _labelOffset);
-
 		public void SetPlayerName(string name) => _label.text = name;
 	}
 }

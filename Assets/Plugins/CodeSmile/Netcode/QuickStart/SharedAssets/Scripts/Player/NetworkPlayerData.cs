@@ -2,9 +2,11 @@
 // Refer to included LICENSE file for terms and conditions.
 
 using System;
+using System.Text;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Custom data for players.
@@ -12,14 +14,17 @@ namespace CodeSmile.Netcode
 	[Serializable]
 	public struct NetworkPlayerData
 	{
+		public static Encoding NameEncoding = Encoding.UTF8;
+		public static int NameMaxLength = 32;
+
 		public bool Connected;
 		public ulong ClientId;
 		//public Guid PlayerId; 
 		public string Name;
 		public Color32 Color;
-		public Vector3 Position;
-		public Quaternion Rotation;
+		[FormerlySerializedAs("Position")] public Vector3 StartPosition;
+		[FormerlySerializedAs("Rotation")] public Quaternion StartRotation;
 
-		public override string ToString() => $"PlayerData(Name:{Name}, Position:{Position})";
+		public override string ToString() => $"PlayerData(Name:{Name}, StartPosition:{StartPosition})";
 	}
 }

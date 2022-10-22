@@ -3,7 +3,7 @@
 
 using System;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	[Serializable]
 	public struct ConnectionPayloadData

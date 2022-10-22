@@ -1,0 +1,4 @@
+﻿{
+  "name": "CodeSmile.Netcode.QuickStart.Editor",
+  "references":[ "GUID:9f4f5bf029cebb64f983b7bdc29f62a1", "GUID:a34d8172d6554a243b0d599775f64fa3" ]
+}

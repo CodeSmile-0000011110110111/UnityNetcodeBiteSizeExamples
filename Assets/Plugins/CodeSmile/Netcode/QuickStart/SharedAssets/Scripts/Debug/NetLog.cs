@@ -4,7 +4,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Less verbose logging than NetworkLog which also works when the Network is shutdown or not yet initialized.

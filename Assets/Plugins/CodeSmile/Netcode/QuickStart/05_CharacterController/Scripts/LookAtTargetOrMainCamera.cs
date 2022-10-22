@@ -13,7 +13,7 @@ namespace CodeSmile.Netcode.QuickStart
 	{
 		[Tooltip("The target to face towards. If null, will face towards Camera.main.")]
 		[SerializeField] private Transform _target;
-		
+
 		private void Start()
 		{
 			if (_target == null)

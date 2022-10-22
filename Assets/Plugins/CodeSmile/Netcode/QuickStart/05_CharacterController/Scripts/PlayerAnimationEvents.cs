@@ -3,10 +3,10 @@
 
 using UnityEngine;
 
-namespace Plugins.CodeSmile.Netcode.QuickStart
+namespace CodeSmile.Netcode.QuickStart
 {
 	[RequireComponent(typeof(CharacterController))]
-	public class PlayerAnimationAudio : MonoBehaviour
+	public class PlayerAnimationEvents : MonoBehaviour
 	{
 		public AudioClip _landingAudioClip;
 		[Range(0f, 1f)] public float _landAudioVolume = 0.5f;

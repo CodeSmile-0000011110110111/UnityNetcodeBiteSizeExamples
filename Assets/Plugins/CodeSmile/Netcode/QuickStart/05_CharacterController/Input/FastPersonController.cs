@@ -284,7 +284,7 @@ namespace CodeSmile.Netcode.QuickStart
 			var backward = moveDir.z < 0f;
 			var motionSpeed = _motionState.Velocity.magnitude / _animationSettings.RunSpeed * (backward ? -1f : 1f);
 			//if (_animationBlendSpeed > 0f || motionSpeed > 0f) Debug.Log($"anim speed: {_animationBlendSpeed}, motionSpeed: {motionSpeed}");
-			
+
 			_animator.SetFloat(_animId.Speed, _animationBlendSpeed);
 			_animator.SetFloat(_animId.MotionSpeed, motionSpeed);
 			SetJumpFallAnimationState(false, false);

@@ -1,10 +1,9 @@
-using CodeSmile.Netcode.QuickStart;
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// Handles spawn/despawn of player prefabs in the lobby.

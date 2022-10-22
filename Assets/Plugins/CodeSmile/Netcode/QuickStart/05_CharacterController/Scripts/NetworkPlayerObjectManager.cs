@@ -21,13 +21,6 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private void OnDisable() => _playerNameVar.OnValueChanged -= OnPlayerNameChanged;
 
-		public void ReSendPlayerName()
-		{
-			var playerName = _playerNameVar.Value;
-			_playerNameVar.Value = "";
-			_playerNameVar.Value = playerName;
-		}
-
 		public override void OnNetworkSpawn()
 		{
 			if (_localPlayerRoot == null)
@@ -44,11 +37,11 @@ namespace CodeSmile.Netcode.QuickStart
 
 			if (IsServer)
 			{
-				var bootstrap = FindObjectOfType<NetcodeBootstrap>();
-				//var playerInfo = bootstrap.GetPlayerInfo(OwnerClientId);
-				//_playerNameVar.Value = playerInfo.Name;
-				Debug.LogWarning("todo: get player name");
+				var playerData = ServerPlayerManager.Singleton.GetPlayerData(OwnerClientId);
+				_playerNameVar.Value = playerData.Name;
 			}
+
+			_nameTag.SetPlayerName(_playerNameVar.Value.ToString());
 
 			GetComponent<CharacterController>().enabled = IsLocalPlayer;
 			_localPlayerRoot.SetActive(IsLocalPlayer);

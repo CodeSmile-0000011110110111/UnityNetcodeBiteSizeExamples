@@ -13,7 +13,7 @@ namespace Plugins.CodeSmile.Netcode.QuickStart
 		[SerializeField] private Transform _cinemachineCameraTarget;
 
 		private CinemachineVirtualCamera _virtualFollowCamera;
-		
+
 		public override void OnNetworkSpawn()
 		{
 			base.OnNetworkSpawn();
@@ -30,7 +30,7 @@ namespace Plugins.CodeSmile.Netcode.QuickStart
 		{
 			if (IsOwner)
 				Destroy(_virtualFollowCamera.gameObject);
-			
+
 			base.OnNetworkDespawn();
 		}
 	}

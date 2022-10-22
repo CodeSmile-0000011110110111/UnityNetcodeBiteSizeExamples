@@ -5,7 +5,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CodeSmile.Netcode
+namespace CodeSmile.Netcode.QuickStart
 {
 	/// <summary>
 	/// This is a relay class for client disconnect / network shutdown events. It is part of the NetcodeBootstrap prefab.

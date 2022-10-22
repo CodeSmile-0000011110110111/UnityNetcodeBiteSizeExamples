@@ -65,7 +65,7 @@ namespace CodeSmile.Netcode.QuickStart
 
 		public static ConnectionPayloadData GetConnectionPayloadData() => new()
 		{
-			PlayerData = new NetworkPlayerData { Name = LocalPlayerName, Position = Vector3.up },
+			PlayerData = new NetworkPlayerData { Name = LocalPlayerName, StartPosition = Vector3.up },
 			PasswordHash = ServerPasswordHash,
 		};
 	}
