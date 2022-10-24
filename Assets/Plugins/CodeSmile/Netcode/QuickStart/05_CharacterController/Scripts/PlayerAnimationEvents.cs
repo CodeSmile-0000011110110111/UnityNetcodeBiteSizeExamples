@@ -10,8 +10,10 @@ namespace CodeSmile.Netcode.QuickStart
 	{
 		public AudioClip _landingAudioClip;
 		[Range(0f, 1f)] public float _landAudioVolume = 0.5f;
+		[Range(0f, 1f)] public float _landMinBlendWeight = 0.3f;
 		public AudioClip[] _footstepAudioClips;
 		[Range(0f, 1f)] public float _footstepAudioVolume = 0.5f;
+		[Range(0f, 1f)] public float _footstepMinBlendWeight = 0.5f;
 
 		private CharacterController _characterController;
 
@@ -19,8 +21,8 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private void OnLand(AnimationEvent animationEvent)
 		{
-			Debug.Log(animationEvent.animatorClipInfo.weight);
-			if (animationEvent.animatorClipInfo.weight >= 0.0f)
+			//Debug.Log(animationEvent.animatorClipInfo.weight);
+			if (animationEvent.animatorClipInfo.weight >= _landMinBlendWeight)
 			{
 				var pos = transform.TransformPoint(_characterController.center);
 				AudioSource.PlayClipAtPoint(_landingAudioClip, pos, _landAudioVolume);
@@ -29,7 +31,7 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private void OnFootstep(AnimationEvent animationEvent)
 		{
-			if (animationEvent.animatorClipInfo.weight > 0.5f)
+			if (animationEvent.animatorClipInfo.weight >= _footstepMinBlendWeight)
 			{
 				if (_footstepAudioClips.Length > 0)
 				{

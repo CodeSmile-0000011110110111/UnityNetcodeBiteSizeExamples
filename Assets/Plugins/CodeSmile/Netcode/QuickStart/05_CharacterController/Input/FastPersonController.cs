@@ -4,6 +4,7 @@
 using Cinemachine;
 using System;
 using System.Runtime.CompilerServices;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace CodeSmile.Netcode.QuickStart
@@ -29,7 +30,7 @@ namespace CodeSmile.Netcode.QuickStart
 
 		[Header("Camera")]
 		[SerializeField] private CinemachineVirtualCamera _virtualCamera;
-		[SerializeField] private PlayerMouseLook _mouseLook = new();
+		[SerializeField] private PlayerMouseLook _mouseLook;
 
 		[Header("Settings")]
 		[SerializeField] private MotionSettings _motionSettings;
@@ -41,8 +42,8 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private AnimationId _animId;
 		private float _animationBlendSpeed;
-		private PlayerInputReceiver _inputReceiver;
-		private PlayerInputReceiver.InputState _inputState;
+		private IPlayerInputReceiver _inputReceiver;
+		private PlayerInputState _playerInputState;
 		private Vector3 _groundHitNormal;
 		private bool _isJumpQueued;
 
@@ -55,21 +56,28 @@ namespace CodeSmile.Netcode.QuickStart
 			if (_animator == null)
 				throw new ArgumentNullException("a Animator must be assigned in the Inspector");
 
-			_inputReceiver = GetComponent<PlayerInputReceiver>();
-			SetCharacterControllerCenterYFromHeight();
-			AssignAnimationIds();
-
+			var localInputReceiver = GetComponent<PlayerInputReceiver>();
+			var netInputReceiver = GetComponent<NetworkPlayerInputReceiver>();
+			_inputReceiver = netInputReceiver.enabled ? netInputReceiver : localInputReceiver;
+			
 			// for convenience (and because it wouldn't make any sense) always remove our own layer from the collision mask
 			//_collisionSettings.groundLayers &= ~gameObject.layer;
 
+			_mouseLook = new PlayerMouseLook();
 			_mouseLook.Init(_characterController.transform, _virtualCamera.transform, _inputReceiver);
+			
+			// if server authoritative (character controller is not enabled) disable local move and camera
+			enabled = _characterController.enabled;
+			
+			SetCharacterControllerCenterYFromHeight();
+			AssignAnimationIds();
 		}
 
 		private void Update()
 		{
-			_inputState = _inputReceiver.CurrentState;
+			_playerInputState = _inputReceiver.CurrentState;
 
-			UpdateGroundedState();
+			DetermineGroundedState();
 			SetGroundedAnimationState();
 
 			if (_motionState.IsGrounded)
@@ -81,7 +89,7 @@ namespace CodeSmile.Netcode.QuickStart
 				AirMove();
 
 			_mouseLook.UpdateCursorLockState();
-			_mouseLook.LookRotation(_characterController.transform, _virtualCamera.transform, _inputState.LookDir);
+			_mouseLook.LookRotation(_characterController.transform, _virtualCamera.transform, _playerInputState.LookDir);
 			_characterController.Move(_motionState.Velocity * Time.deltaTime);
 		}
 
@@ -134,17 +142,17 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private void GroundMove()
 		{
-			if (_inputState.JumpPressed == false)
+			if (_playerInputState.JumpPressed == false)
 				ApplySurfaceFriction();
 
-			var moveDir = _inputState.GetMoveDir();
+			var moveDir = _playerInputState.GetMoveDir();
 			var targetDir = _characterController.transform.TransformDirection(moveDir).normalized;
 			var targetSpeed = targetDir.magnitude * _motionSettings.Ground.MaxSpeed;
 			Accelerate(targetDir, targetSpeed, _motionSettings.Ground.Acceleration);
 
-			if (_inputState.JumpPressed)
+			if (_playerInputState.JumpPressed)
 			{
-				_inputState.JumpPressed = false;
+				_playerInputState.JumpPressed = false;
 				_motionState.Velocity.y = _motionSettings.JumpForce;
 				SetJumpFallAnimationState(true, false);
 			}
@@ -159,7 +167,7 @@ namespace CodeSmile.Netcode.QuickStart
 
 		private void AirMove()
 		{
-			var inputDir = _inputState.GetMoveDir();
+			var inputDir = _playerInputState.GetMoveDir();
 			var targetDir = _characterController.transform.TransformDirection(inputDir);
 			var moveSpeed = targetDir.magnitude * _motionSettings.Air.MaxSpeed;
 			var airControlSpeed = moveSpeed;
@@ -193,7 +201,7 @@ namespace CodeSmile.Netcode.QuickStart
 		private void AirControl(Vector3 targetDir, float targetSpeed)
 		{
 			// no air control when not moving
-			if (Mathf.Approximately(Mathf.Abs(_inputState.MoveDir.y), 0f) || Mathf.Approximately(Mathf.Abs(targetSpeed), 0f))
+			if (Mathf.Approximately(Mathf.Abs(_playerInputState.MoveDir.y), 0f) || Mathf.Approximately(Mathf.Abs(targetSpeed), 0f))
 				return;
 
 			var velocity = _motionState.Velocity;
@@ -258,12 +266,11 @@ namespace CodeSmile.Netcode.QuickStart
 			return pos;
 		}
 
-		private void UpdateGroundedState()
+		private void DetermineGroundedState()
 		{
 			var groundSpherePos = GetGroundedSpherePosition();
 			var radius = _characterController.radius;
 			var layers = _collisionSettings.GroundLayers;
-
 			_motionState.IsGrounded = Physics.CheckSphere(groundSpherePos, radius, layers, QueryTriggerInteraction.Ignore);
 		}
 

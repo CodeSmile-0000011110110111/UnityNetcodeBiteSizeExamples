@@ -22,11 +22,11 @@ namespace CodeSmile.Netcode.QuickStart
 		private Quaternion _characterTargetRotation;
 		private Quaternion _cameraTargetRotation;
 
-		private PlayerInputReceiver _inputReceiver;
+		private IPlayerInputReceiver _inputReceiver;
 		private bool _isCursorLocked = true;
 		private bool _initialized;
 
-		public void Init(Transform character, Transform camera, PlayerInputReceiver inputReceiver)
+		public void Init(Transform character, Transform camera, IPlayerInputReceiver inputReceiver)
 		{
 			_characterTargetRotation = character.localRotation;
 			_cameraTargetRotation = camera.localRotation;
